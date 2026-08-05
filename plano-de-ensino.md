@@ -1,10 +1,13 @@
 # Plano de Ensino — Arquitetura Web, HTTP, API REST, HTML, CSS e JavaScript
 
 **Curso:** Técnico em Desenvolvimento de Sistemas
+
 **Módulo:** Fundamentos de Arquitetura Web, Protocolo HTTP, Conceitos de API REST, HTML, CSS e JavaScript
+
 **Carga Horária:** 65 horas
-**Período:** [a definir]
+
 **Professor(a):** @karizeviecelli
+
 **Data de elaboração:** 05 de agosto de 2026
 
 ---
