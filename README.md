@@ -109,7 +109,7 @@ Ao longo do curso, você vai construindo um projeto próprio, com entregas parci
 
 ---
 
-Bons estudos! Qualquer dúvida, procure o(a) instrutor(a) ou abra uma *issue* neste repositório.
+Bons estudos! Qualquer dúvida, procure a professora ou abra uma *issue* neste repositório.
 
 ---
 
