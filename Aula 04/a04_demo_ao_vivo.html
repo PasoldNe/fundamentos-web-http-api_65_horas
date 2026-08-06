@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Demonstração ao vivo — Aula 04 CSS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}
+
+.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:1100px;margin:0 auto}
+
+.panel{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.panel-title{font-size:12px;font-weight:500;color:#64748b}
+.dots-row{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+
+.editor-body{background:#1E293B;min-height:340px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.75;color:#94A3B8;overflow:hidden;position:relative}
+#code-output{white-space:pre-wrap;word-break:break-all}
+.cursor{display:inline-block;width:2px;height:14px;background:#60A5FA;vertical-align:middle;animation:blink .9s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.preview-body{background:#ffffff;min-height:340px;padding:16px;overflow-y:auto}
+
+.step-bar{padding:12px 16px;border-top:1px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;gap:10px;grid-column:1/-1}
+.step-label{font-size:12px;color:#64748b;flex:1;line-height:1.4}
+.step-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;background:#eff6ff;color:#1d4ed8}
+.ctrl-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#1e293b;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.ctrl-btn:hover{background:#f1f5f9}
+.ctrl-btn.go{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.ctrl-btn.go:hover{background:#1e40af}
+.ctrl-btn:disabled{opacity:.35;pointer-events:none}
+
+.narr-box{grid-column:1/-1;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;background:#f8fafc;font-size:13px;color:#475569;line-height:1.6;min-height:52px}
+.narr-box strong{color:#1e293b;font-weight:600}
+
+.prog-track{height:3px;background:#e2e8f0;border-radius:2px;grid-column:1/-1;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s ease;width:0%}
+
+.page-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.page-title h1{font-size:16px;font-weight:600;color:#1e293b}
+.page-title p{font-size:12px;color:#94a3b8}
+
+.k{color:#93C5FD}
+.kv{color:#6EE7B7}
+.a{color:#FDE68A}
+.s{color:#FDA4AF}
+.t{color:#E2E8F0}
+.c{color:#475569;font-style:italic}
+
+@media(max-width:700px){
+  .demo-wrap{grid-template-columns:1fr}
+  .panel:last-of-type{display:none}
+}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <div class="page-title">
+    <h1>Demonstração ao vivo — Aula 04</h1>
+    <p>Docente digita · Alunos acompanham &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p>
+
+    <button onclick="window.location.href='a04_pratica_guiada.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📝 Prática →</button></div>
+
+  <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">VS Code — estilos.css</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="editor-body"><span id="code-output"></span><span class="cursor" id="cur"></span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">Navegador — resultado ao vivo</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="preview-body" id="preview"></div>
+  </div>
+
+  <div class="narr-box" id="narr">Pronto para começar. Clique em <strong>Iniciar digitação</strong> para ver o docente estilizando a página de perfil ao vivo.</div>
+
+  <div class="step-bar">
+    <span class="step-badge" id="step-badge">Etapa 1 / 8</span>
+    <span class="step-label" id="step-desc">Conectando o CSS externo</span>
+    <button class="ctrl-btn" id="btn-prev" onclick="prevStep()" disabled>&#8592; Anterior</button>
+    <button class="ctrl-btn go" id="btn-play" onclick="playStep()">Iniciar digitação</button>
+    <button class="ctrl-btn" id="btn-next" onclick="nextStep()" disabled>Próxima &#8594;</button>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {
+    label: "Conectando o CSS externo",
+    narr: "<strong>Docente:</strong> \"Primeiro crio o arquivo <code>estilos.css</code> e conecto ao HTML com <code>&lt;link&gt;</code> dentro do <code>&lt;head&gt;</code>. A partir daqui, tudo que eu escrever no CSS afeta a página.\"",
+    code: `<span class="c">&lt;!-- No head do perfil.html --&gt;</span>\n<span class="k">&lt;link</span> <span class="a">rel</span>=<span class="s">"stylesheet"</span> <span class="a">href</span>=<span class="s">"estilos.css"</span><span class="k">&gt;</span>\n\n<span class="c">/* estilos.css — arquivo vazio, por enquanto */</span>`,
+    preview: `<div style="font-family:Arial,sans-serif"><h1 style="font-weight:normal">Karize</h1><p>Estudante de Desenvolvimento de Sistemas.</p></div>`
+  },
+  {
+    label: "Estilizando o body com seletor de tag",
+    narr: "<strong>Docente:</strong> \"Uso o seletor de TAG <code>body</code> para definir a fonte e a cor de fundo de toda a página de uma vez só.\"",
+    code: `<span class="k">body</span> <span class="t">{</span>\n  <span class="a">font-family</span>: <span class="s">Arial, sans-serif</span><span class="t">;</span>\n  <span class="a">background-color</span>: <span class="s">#f8fafc</span><span class="t">;</span>\n  <span class="a">color</span>: <span class="s">#1e293b</span><span class="t">;</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;color:#1e293b;padding:8px;border-radius:6px"><h1 style="font-weight:normal">Karize</h1><p>Estudante de Desenvolvimento de Sistemas.</p></div>`
+  },
+  {
+    label: "Estilizando o h1 com seletor de id",
+    narr: "<strong>Docente:</strong> \"Dou um <code>id='titulo'</code> ao h1 no HTML e uso o seletor <code>#titulo</code> no CSS. Como é único, esse estilo vale só para ele.\"",
+    code: `<span class="c">&lt;!-- No HTML --&gt;</span>\n<span class="k">&lt;h1</span> <span class="a">id</span>=<span class="s">"titulo"</span><span class="k">&gt;</span><span class="t">Karize</span><span class="k">&lt;/h1&gt;</span>\n\n<span class="c">/* No CSS */</span>\n<span class="k">#titulo</span> <span class="t">{</span>\n  <span class="a">font-size</span>: <span class="s">2rem</span><span class="t">;</span>\n  <span class="a">color</span>: <span class="s">#1d4ed8</span><span class="t">;</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;color:#1e293b;padding:8px;border-radius:6px"><h1 style="font-size:24px;color:#1d4ed8;font-weight:600">Karize</h1><p>Estudante de Desenvolvimento de Sistemas.</p></div>`
+  },
+  {
+    label: "Criando a classe .destaque",
+    narr: "<strong>Docente:</strong> \"Crio uma classe <code>.destaque</code>, que posso aplicar a QUALQUER trecho de texto, em qualquer lugar da página. É o 'crachá' reutilizável.\"",
+    code: `<span class="c">/* No CSS */</span>\n<span class="k">.destaque</span> <span class="t">{</span>\n  <span class="a">color</span>: <span class="s">#dc2626</span><span class="t">;</span>\n  <span class="a">font-weight</span>: <span class="s">bold</span><span class="t">;</span>\n<span class="t">}</span>\n\n<span class="c">&lt;!-- No HTML --&gt;</span>\n<span class="k">&lt;p&gt;</span><span class="t">Estudante</span>\n<span class="k">&lt;span</span> <span class="a">class</span>=<span class="s">"destaque"</span><span class="k">&gt;</span><span class="t">apaixonada por tecnologia</span><span class="k">&lt;/span&gt;</span><span class="t">.</span><span class="k">&lt;/p&gt;</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;padding:8px;border-radius:6px"><h1 style="font-size:24px;color:#1d4ed8">Karize</h1><p style="color:#1e293b">Estudante <span style="color:#dc2626;font-weight:bold">apaixonada por tecnologia</span>.</p></div>`
+  },
+  {
+    label: "Seletor descendente para links do nav",
+    narr: "<strong>Docente:</strong> \"Uso o seletor descendente <code>nav a</code> para estilizar SÓ os links que estão dentro do nav, sem afetar links de outras partes da página.\"",
+    code: `<span class="k">nav a</span> <span class="t">{</span>\n  <span class="a">text-decoration</span>: <span class="s">none</span><span class="t">;</span>\n  <span class="a">color</span>: <span class="s">#1d4ed8</span><span class="t">;</span>\n  <span class="a">margin-right</span>: <span class="s">12px</span><span class="t">;</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;padding:8px;border-radius:6px"><nav><a href="#" style="text-decoration:none;color:#1d4ed8;margin-right:12px">Início</a><a href="#" style="text-decoration:none;color:#1d4ed8;margin-right:12px">Sobre</a></nav></div>`
+  },
+  {
+    label: "Espaçamento com diferentes unidades",
+    narr: "<strong>Docente:</strong> \"Aqui uso <code>%</code> para a largura do container principal, e <code>px</code> para o espaçamento interno (padding) — cada unidade no lugar certo.\"",
+    code: `<span class="k">main</span> <span class="t">{</span>\n  <span class="a">width</span>: <span class="s">90%</span><span class="t">;</span>\n  <span class="a">margin</span>: <span class="s">0 auto</span><span class="t">;</span>\n  <span class="a">padding</span>: <span class="s">16px</span><span class="t">;</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;padding:8px;border-radius:6px"><div style="width:90%;margin:0 auto;padding:16px;background:#fff;border:1px dashed #cbd5e1;font-size:12px;color:#94a3b8">main (90% de largura, padding de 16px)</div></div>`
+  },
+  {
+    label: "Testando o seletor universal",
+    narr: "<strong>Docente:</strong> \"Só para vocês verem o efeito: o seletor universal <code>*</code> zera margens e paddings de TODOS os elementos. Muito comum no início de um arquivo CSS, como 'reset'.\"",
+    code: `<span class="k">*</span> <span class="t">{</span>\n  <span class="a">margin</span>: <span class="s">0</span><span class="t">;</span>\n  <span class="a">padding</span>: <span class="s">0</span><span class="t">;</span>\n  <span class="a">box-sizing</span>: <span class="s">border-box</span><span class="t">;</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;padding:8px;border-radius:6px;font-size:12px;color:#94a3b8">Reparem: os espaçamentos padrão do navegador desaparecem — agora nós controlamos tudo.</div>`
+  },
+  {
+    label: "Resultado final",
+    narr: "<strong>Docente:</strong> \"Vejam o resultado completo: mesma estrutura HTML da Aula 03, agora com cor, tipografia e espaçamento. Isso é o poder do CSS. Agora é a vez de vocês.\"",
+    code: `<span class="c">/* estilos.css completo */</span>\n<span class="k">*</span> <span class="t">{</span> <span class="a">margin</span>: <span class="s">0</span><span class="t">;</span> <span class="a">padding</span>: <span class="s">0</span><span class="t">;</span> <span class="t">}</span>\n<span class="k">body</span> <span class="t">{</span> <span class="a">font-family</span>: <span class="s">Arial, sans-serif</span><span class="t">;</span> <span class="a">background-color</span>: <span class="s">#f8fafc</span><span class="t">;</span> <span class="t">}</span>\n<span class="k">#titulo</span> <span class="t">{</span> <span class="a">font-size</span>: <span class="s">2rem</span><span class="t">;</span> <span class="a">color</span>: <span class="s">#1d4ed8</span><span class="t">;</span> <span class="t">}</span>\n<span class="k">.destaque</span> <span class="t">{</span> <span class="a">color</span>: <span class="s">#dc2626</span><span class="t">;</span> <span class="t">}</span>\n<span class="k">nav a</span> <span class="t">{</span> <span class="a">color</span>: <span class="s">#1d4ed8</span><span class="t">;</span> <span class="t">}</span>`,
+    preview: `<div style="font-family:Arial,sans-serif;background:#f8fafc;padding:12px;border-radius:6px"><h1 style="font-size:22px;color:#1d4ed8;margin-bottom:6px">Karize</h1><nav style="margin-bottom:8px"><a href="#" style="text-decoration:none;color:#1d4ed8;margin-right:10px;font-size:12px">Início</a><a href="#" style="text-decoration:none;color:#1d4ed8;font-size:12px">Sobre</a></nav><p style="font-size:13px;color:#1e293b">Estudante <span style="color:#dc2626;font-weight:bold">apaixonada por tecnologia</span>.</p></div>`
+  }
+];
+
+let cur=0, typing=false, typeTimer=null;
+
+function render(){
+  const s=STEPS[cur];
+  document.getElementById('step-badge').textContent=`Etapa ${cur+1} / ${STEPS.length}`;
+  document.getElementById('step-desc').textContent=s.label;
+  document.getElementById('prog').style.width=`${Math.round(((cur+1)/STEPS.length)*100)}%`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+  document.getElementById('narr').innerHTML=s.narr;
+  document.getElementById('preview').innerHTML=s.preview||'';
+}
+
+function showCode(s){
+  document.getElementById('code-output').innerHTML=s.code;
+}
+
+function playStep(){
+  if(typing)return;
+  typing=true;
+  const s=STEPS[cur];
+  const out=document.getElementById('code-output');
+  out.innerHTML='';
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-prev').disabled=true;
+  document.getElementById('btn-next').disabled=true;
+
+  const full=s.code;
+  const stripped=full.replace(/<[^>]+>/g,'');
+  const htmlParts=[];
+  let i=0,pos=0;
+  while(i<full.length){
+    if(full[i]==='<'){
+      const end=full.indexOf('>',i);
+      if(end!==-1){htmlParts.push({type:'tag',val:full.slice(i,end+1),pos});i=end+1;continue;}
+    }
+    htmlParts.push({type:'char',val:full[i],pos,ch:stripped[pos]||''});
+    pos++;i++;
+  }
+
+  let pi=0;
+  function tick(){
+    if(pi>=htmlParts.length){
+      typing=false;
+      document.getElementById('btn-play').textContent='Rever';
+      document.getElementById('btn-play').disabled=false;
+      document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+      document.getElementById('btn-prev').disabled=false;
+      return;
+    }
+    const p=htmlParts[pi];
+    if(p.type==='tag'){out.innerHTML+=p.val;pi++;tick();return;}
+    out.innerHTML+=p.val;
+    pi++;
+    const delay=p.ch==='\n'?60:p.ch===' '?20:Math.random()*25+18;
+    typeTimer=setTimeout(tick,delay);
+  }
+  tick();
+}
+
+function nextStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.min(cur+1,STEPS.length-1);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+function prevStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.max(cur-1,0);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+render();
+document.getElementById('code-output').innerHTML='';
+document.getElementById('btn-play').textContent='Iniciar digitação';
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a04_exposicao.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0;white-space:nowrap" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">&#8592; Exposição</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 04 &middot; 2 de 5 &middot; Demo ao Vivo<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a04_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Prática Guiada &#8594;</a>
+</div>
+</body>
+</html>

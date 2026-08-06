@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — Layout com CSS Grid · Aula 07</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+
+/* PROGRESS DOTS */
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+
+/* SLIDE AREA */
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body em{font-style:italic}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* GRID PLANTA-BAIXA VISUAL */
+.planta-demo{display:grid;grid-template-columns:1fr 2fr;grid-template-rows:44px 90px 36px;gap:6px;margin:10px 0 18px;max-width:420px}
+.pg-cell{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.pg-cabecalho{grid-column:1/3;background:#bfdbfe;color:#1e3a8a}
+.pg-menu{background:#fef3c7;color:#92400e}
+.pg-conteudo{background:#bbf7d0;color:#166534}
+.pg-rodape{grid-column:1/3;background:#fecaca;color:#991b1b}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e2e8f0}
+.tl-item{position:relative;margin-bottom:14px;cursor:pointer}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;transition:all .2s}
+.tl-item:hover::before{background:#3b82f6;border-color:#3b82f6}
+.tl-item.tl-open::before{background:#1d4ed8;border-color:#1d4ed8;transform:scale(1.25)}
+.tl-year{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px}
+.tl-head{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:3px}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.tl-item.tl-open .tl-desc{max-height:160px}
+.tl-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:5px}
+
+/* CODE */
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.kv{color:#6ee7b7}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.comp-side{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.comp-hdr{padding:8px 14px;font-size:12px;font-weight:600}
+.comp-body{padding:10px 14px;font-size:12px;color:#64748b;line-height:1.65}
+.comp-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TAG EXPLORER */
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+
+/* QUIZ */
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+
+/* REFLECT */
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+
+/* HIGHLIGHT BOX */
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+
+/* NAV BAR */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 07</span>
+      <div>
+        <div class="hdr-title">Layout com CSS Grid — Exposição Dialogada</div>
+        <div class="hdr-sub">30 minutos · Projetor · Turma</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+  <button onclick="window.location.href='a07_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+
+  <div class="dots" id="dots-bar"></div>
+
+  <div class="slide-wrap" id="slide-wrap"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 9</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  {
+    id:'intro', time:3,
+    render:()=>`
+      <div class="eyebrow">Abertura · 3 minutos</div>
+      <div class="slide-title">A planta baixa da casa</div>
+      <div class="slide-sub">Se o Flexbox organiza uma fila de móveis, o CSS Grid é a planta baixa completa: uma grade de linhas e colunas onde cada cômodo tem seu lugar exato.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🏗️</div>
+          <div class="card-title">display: grid</div>
+          <div class="card-body">"Este terreno agora é uma planta quadriculada."</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">📐</div>
+          <div class="card-title">grid-template-columns/rows</div>
+          <div class="card-body">O tamanho de cada coluna e linha do terreno.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🚪</div>
+          <div class="card-title">grid-column / grid-row</div>
+          <div class="card-body">"Este cômodo ocupa estas coordenadas."</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <div class="card-title">grid-template-areas</div>
+          <div class="card-body">Dar nome a cada cômodo e desenhar a planta com nomes.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Pergunta para a turma:</strong> Flexbox organiza bem uma fila. Mas como organizar cabeçalho, menu, conteúdo e rodapé ao mesmo tempo? É aí que entra o Grid.</div>`
+  },
+  {
+    id:'ativando', time:6,
+    render:()=>`
+      <div class="eyebrow">Fundação · 6 minutos</div>
+      <div class="slide-title">display: grid e a unidade fr</div>
+      <div class="slide-sub">grid-template-columns e grid-template-rows definem o tamanho de cada coluna e linha do terreno.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · .dashboard</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">.dashboard</span> <span class="t">{</span>
+  <span class="a">display</span>: <span class="s">grid</span><span class="t">;</span>
+  <span class="a">grid-template-columns</span>: <span class="s">200px 1fr 1fr</span><span class="t">;</span>
+  <span class="a">grid-template-rows</span>: <span class="s">80px auto 60px</span><span class="t">;</span>
+  <span class="a">gap</span>: <span class="s">12px</span><span class="t">;</span>
+<span class="t">}</span></pre>
+      </div>
+      <div class="hl"><strong>fr = fração do espaço:</strong> em <code>200px 1fr 1fr</code>, os 200px são reservados primeiro, e o restante é dividido igualmente entre as duas colunas <code>1fr</code>.</div>`
+  },
+  {
+    id:'posicionando', time:6,
+    render:()=>`
+      <div class="eyebrow">Controle fino · 6 minutos</div>
+      <div class="slide-title">grid-column e grid-row</div>
+      <div class="slide-sub">Como um caderno quadriculado: as linhas da grade ficam entre as células, numeradas a partir de 1.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · posicionamento manual</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">.item-menu</span> <span class="t">{</span>
+  <span class="a">grid-column</span>: <span class="s">1 / 2</span><span class="t">;</span> <span class="c">/* só a coluna 1 */</span>
+  <span class="a">grid-row</span>: <span class="s">1 / 3</span><span class="t">;</span>    <span class="c">/* da linha 1 até a 3 */</span>
+<span class="t">}</span>
+
+<span class="k">.item-destaque</span> <span class="t">{</span>
+  <span class="a">grid-column</span>: <span class="s">span 2</span><span class="t">;</span> <span class="c">/* ocupa 2 colunas, atalho mais legível */</span>
+<span class="t">}</span></pre>
+      </div>`
+  },
+  {
+    id:'areas', time:6,
+    render:()=>`
+      <div class="eyebrow">A ferramenta mais poderosa · 6 minutos</div>
+      <div class="slide-title">grid-template-areas: nomeando os cômodos</div>
+      <div class="slide-sub">Cada "linha" de texto no CSS representa uma linha da grade — dá para enxergar o layout só de olhar o código.</div>
+      <div class="planta-demo">
+        <div class="pg-cell pg-cabecalho">cabeçalho</div>
+        <div class="pg-cell pg-menu">menu</div>
+        <div class="pg-cell pg-conteudo">conteúdo</div>
+        <div class="pg-cell pg-rodape">rodapé</div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · grid-template-areas</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">.dashboard</span> <span class="t">{</span>
+  <span class="a">grid-template-areas</span>:
+    <span class="s">"cabecalho cabecalho"</span>
+    <span class="s">"menu      conteudo"</span>
+    <span class="s">"rodape    rodape"</span><span class="t">;</span>
+<span class="t">}</span>
+<span class="k">.cabecalho</span> <span class="t">{</span> <span class="a">grid-area</span>: <span class="s">cabecalho</span><span class="t">;</span> <span class="t">}</span></pre>
+      </div>`
+  },
+  {
+    id:'comparacao', time:5,
+    render:()=>`
+      <div class="eyebrow">Decisão de design · 5 minutos</div>
+      <div class="slide-title">Flexbox x Grid: quando usar cada um</div>
+      <div class="slide-sub">Não é "um ou outro" — são ferramentas complementares.</div>
+      <div class="compare">
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#eff6ff;color:#1d4ed8">Flexbox — 1 dimensão</div>
+          <div class="comp-body">
+            Uma fila de itens (linha OU coluna)<br><br>
+            Exemplos: navbar, lista de botões, tags que quebram linha
+          </div>
+        </div>
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#fdf4ff;color:#a21caf">Grid — 2 dimensões</div>
+          <div class="comp-body">
+            Linhas E colunas ao mesmo tempo<br><br>
+            Exemplos: estrutura geral da página, dashboard, galeria fixa
+          </div>
+        </div>
+      </div>
+      <div class="hl"><strong>Combinando os dois:</strong> Grid organiza a página inteira; Flexbox organiza os itens DENTRO de uma área específica do Grid, como a lista de links do menu lateral.</div>`
+  },
+  {
+    id:'explorer', time:4,
+    render:()=>`
+      <div class="eyebrow">Prática interativa · 4 minutos</div>
+      <div class="slide-title">Propriedades do Grid — clique para explorar</div>
+      <div class="slide-sub">Revisão rápida de cada peça do quebra-cabeça.</div>
+      <div class="tag-grid">
+        <div class="tag-item" onclick="showTag(this,'grid-template-columns','Define o número e o tamanho das colunas da grade. Ex: repeat(3, 1fr) cria 3 colunas iguais.')">
+          <div class="tag-code">columns</div><div class="tag-name">Colunas</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'grid-template-rows','Define o número e a altura das linhas da grade. Aceita px, %, fr ou auto.')">
+          <div class="tag-code">rows</div><div class="tag-name">Linhas</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'gap','Espaço entre as células da grade, tanto entre linhas quanto entre colunas — o mesmo conceito do Flexbox.')">
+          <div class="tag-code">gap</div><div class="tag-name">Espaçamento</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'grid-column','Posiciona um item específico dizendo em qual coluna (ou faixa de colunas) ele começa e termina.')">
+          <div class="tag-code">grid-column</div><div class="tag-name">Posição horizontal</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'grid-row','Posiciona um item específico dizendo em qual linha (ou faixa de linhas) ele começa e termina.')">
+          <div class="tag-code">grid-row</div><div class="tag-name">Posição vertical</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'grid-template-areas','Nomeia áreas da grade usando texto — a forma mais legível de desenhar o layout inteiro dentro do CSS.')">
+          <div class="tag-code">template-areas</div><div class="tag-name">Layout nomeado</div>
+        </div>
+      </div>
+      <div class="tag-preview" id="tag-prev">Clique em uma propriedade acima para ver a descrição aqui.</div>`
+  },
+  {
+    id:'quiz', time:3,
+    render:()=>`
+      <div class="eyebrow">Verificação de aprendizagem · 3 minutos</div>
+      <div class="slide-title">Quiz rápido — turma responde junto</div>
+      <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+      <div class="quiz-block">
+        <div class="quiz-q">1. Você precisa que o cabeçalho ocupe TODAS as colunas da grade. Qual técnica usar em grid-template-areas?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>Usar grid-row: span 2</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>Repetir o nome "cabecalho" em todas as colunas daquela linha</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>Usar display: flex no cabeçalho</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>Não é possível fazer isso com grid-template-areas</div>
+        </div>
+        <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! Repetir o nome nas células vizinhas faz o elemento esticar e ocupar todas elas.</div>
+      </div>
+      <div class="quiz-block">
+        <div class="quiz-q">2. Você precisa alinhar 4 botões numa única fila horizontal, com espaço igual entre eles. O que é mais direto?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>CSS Grid com grid-template-areas</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>Flexbox, já que é uma única dimensão</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>Position: absolute em cada botão</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>Float: left em cada botão</div>
+        </div>
+        <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! Uma fila simples é o caso de uso clássico do Flexbox — mais simples que usar Grid para isso.</div>
+      </div>`
+  },
+  {
+    id:'curiosidades', time:1,
+    render:()=>`
+      <div class="eyebrow">Bônus · 1 minuto</div>
+      <div class="slide-title">Você sabia?</div>
+      <div class="slide-sub">Fatos sobre CSS Grid que valem compartilhar com a turma.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">📰</div>
+          <div class="card-title">Inspirado no design editorial</div>
+          <div class="card-body">O CSS Grid foi inspirado nos sistemas de grade usados há décadas por jornais e revistas para organizar colunas de texto e imagens.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">🧩</div>
+          <div class="card-title">repeat() economiza digitação</div>
+          <div class="card-body"><code>grid-template-columns: repeat(4, 1fr)</code> é o mesmo que escrever <code>1fr 1fr 1fr 1fr</code>.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <div class="card-title">auto-fit e auto-fill</div>
+          <div class="card-body">Combinados com minmax(), criam grades responsivas que se ajustam sozinhas ao número de colunas que cabem na tela.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">DevTools tem um inspetor de Grid</div>
+          <div class="card-body">No Chrome/Firefox, a aba Elements mostra um botão "grid" que desenha visualmente as linhas da grade sobre a página.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'fechamento', time:1,
+    render:()=>`
+      <div class="eyebrow">Encerramento · 1 minuto</div>
+      <div class="slide-title">Recapitulando e partindo para a prática</div>
+      <div class="slide-sub">O que aprendemos nesta exposição e o que fazemos agora.</div>
+      <div class="reflect-list">
+        <div class="reflect-item">
+          <div class="reflect-num">1</div>
+          <div class="reflect-text"><strong>display: grid</strong> transforma o container em uma grade de linhas e colunas — controle em 2 dimensões.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">2</div>
+          <div class="reflect-text"><strong>grid-template-areas</strong> é a forma mais legível de desenhar o layout inteiro da página.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">3</div>
+          <div class="reflect-text"><strong>Grid e Flexbox se complementam:</strong> Grid para a estrutura geral, Flexbox para filas de itens dentro dela.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">4</div>
+          <div class="reflect-text"><strong>Agora é hora de construir.</strong> Vamos montar juntos, ao vivo, um dashboard completo com áreas nomeadas antes da prática individual.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Próxima aula:</strong> vamos deixar esse dashboard responsivo, adaptando o layout para telas pequenas com media queries.</div>`
+  }
+];
+
+let cur = 0;
+let timerInterval = null;
+let timerStarted = false;
+
+function buildDots() {
+  const bar = document.getElementById('dots-bar');
+  SLIDES.forEach((s, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i + 1);
+    d.onclick = () => goTo(i);
+    bar.appendChild(d);
+    if (i < SLIDES.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'dot-sep';
+      bar.appendChild(sep);
+    }
+  });
+}
+
+function buildSlides() {
+  const wrap = document.getElementById('slide-wrap');
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.id = 'sl-' + s.id;
+    div.innerHTML = s.render();
+    wrap.appendChild(div);
+  });
+}
+
+function goTo(i) {
+  const prev = cur;
+  document.getElementById('sl-' + SLIDES[prev].id).classList.remove('active');
+  const dots = document.querySelectorAll('.dot');
+  dots[prev].classList.remove('active');
+  if (i > prev) dots[prev].classList.add('done');
+
+  cur = i;
+  const el = document.getElementById('sl-' + SLIDES[cur].id);
+  el.innerHTML = SLIDES[cur].render();
+  el.classList.add('active');
+  dots[cur].classList.add('active');
+  dots[cur].classList.remove('done');
+
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = cur === SLIDES.length - 1;
+  btnNext.textContent = cur === SLIDES.length - 1 ? 'Finalizar' : 'Próximo →';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + SLIDES.length;
+
+  if (!timerStarted) { timerStarted = true; startTimer(); }
+}
+
+function nav(d) {
+  const ni = cur + d;
+  if (ni >= 0 && ni < SLIDES.length) goTo(ni);
+}
+
+function startTimer() {
+  let rem = 30 * 60;
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(timerInterval); el.textContent = '00:00'; el.className = 'timer danger'; return; }
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if (rem <= 300) el.className = 'timer warn';
+    if (rem <= 60)  el.className = 'timer danger';
+  }, 1000);
+}
+
+function tlClick(i) {
+  document.querySelectorAll('.tl-item').forEach((el, j) => el.classList.toggle('tl-open', j === i));
+}
+
+function showTag(el, tag, desc) {
+  document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('tag-on'));
+  el.classList.add('tag-on');
+  document.getElementById('tag-prev').innerHTML =
+    '<strong>' + tag + '</strong><br>' + desc;
+}
+
+function answer(el, type, fbId) {
+  const block = el.closest('.quiz-block');
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o === el) o.classList.add(type === 'c' ? 'correct' : 'wrong');
+    else o.classList.add('dimmed');
+  });
+  const fb = document.getElementById(fbId);
+  if (type !== 'c') {
+    fb.style.background = '#fef2f2';
+    fb.style.color = '#dc2626';
+    fb.textContent = 'Não exatamente — pense em quantas dimensões cada ferramenta controla de uma vez.';
+  }
+  fb.style.display = 'block';
+}
+
+buildDots();
+buildSlides();
+document.getElementById('btn-prev').disabled = true;
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 07 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a07_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>

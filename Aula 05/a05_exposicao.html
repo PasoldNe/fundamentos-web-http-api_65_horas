@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — Box Model e Espaçamento · Aula 05</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+
+/* PROGRESS DOTS */
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+
+/* SLIDE AREA */
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body em{font-style:italic}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* BOX MODEL VISUAL */
+.boxmodel-demo{display:flex;justify-content:center;margin:10px 0 18px}
+.bm-margin{background:#fef3c7;padding:24px;border-radius:6px;position:relative}
+.bm-margin::before{content:'margin';position:absolute;top:4px;left:8px;font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.05em}
+.bm-border{background:#fecaca;padding:16px;border-radius:4px;position:relative}
+.bm-border::before{content:'border';position:absolute;top:4px;left:8px;font-size:10px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:.05em}
+.bm-padding{background:#bbf7d0;padding:20px;position:relative}
+.bm-padding::before{content:'padding';position:absolute;top:4px;left:8px;font-size:10px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:.05em}
+.bm-content{background:#93c5fd;color:#1e3a8a;font-weight:700;font-size:13px;padding:24px 40px;border-radius:2px;margin-top:14px;text-align:center}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e2e8f0}
+.tl-item{position:relative;margin-bottom:14px;cursor:pointer}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;transition:all .2s}
+.tl-item:hover::before{background:#3b82f6;border-color:#3b82f6}
+.tl-item.tl-open::before{background:#1d4ed8;border-color:#1d4ed8;transform:scale(1.25)}
+.tl-year{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px}
+.tl-head{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:3px}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.tl-item.tl-open .tl-desc{max-height:160px}
+.tl-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:5px}
+
+/* CODE */
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.kv{color:#6ee7b7}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.comp-side{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.comp-hdr{padding:8px 14px;font-size:12px;font-weight:600}
+.comp-body{padding:10px 14px;font-size:12px;color:#64748b;line-height:1.65}
+.comp-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TAG EXPLORER */
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+
+/* QUIZ */
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+
+/* REFLECT */
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+
+/* HIGHLIGHT BOX */
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+
+/* NAV BAR */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 05</span>
+      <div>
+        <div class="hdr-title">Box Model e Espaçamento — Exposição Dialogada</div>
+        <div class="hdr-sub">30 minutos · Projetor · Turma</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+  <button onclick="window.location.href='a05_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+
+  <div class="dots" id="dots-bar"></div>
+
+  <div class="slide-wrap" id="slide-wrap"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 9</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  {
+    id:'intro', time:3,
+    render:()=>`
+      <div class="eyebrow">Abertura · 3 minutos</div>
+      <div class="slide-title">Toda caixa é um quadro na parede</div>
+      <div class="slide-sub">Todo elemento HTML é, no fundo, uma caixa retangular. E toda caixa se parece com um quadro pendurado na parede, com quatro camadas.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🖼️</div>
+          <div class="card-title">Content = a pintura</div>
+          <div class="card-body">O conteúdo em si, dentro da moldura.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">⬜</div>
+          <div class="card-title">Padding = o passe-partout</div>
+          <div class="card-body">O espaço branco entre a pintura e a moldura.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🟫</div>
+          <div class="card-title">Border = a moldura</div>
+          <div class="card-body">O contorno visível que envolve tudo.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📏</div>
+          <div class="card-title">Margin = espaço na parede</div>
+          <div class="card-body">A distância até o quadro vizinho.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Pergunta para a turma:</strong> Já tentaram alinhar elementos em CSS e algo ficou "grudado" ou "espremido" sem explicação? A resposta quase sempre está no box model.</div>`
+  },
+  {
+    id:'boxmodel', time:6,
+    render:()=>`
+      <div class="eyebrow">O quadro completo · 6 minutos</div>
+      <div class="slide-title">As quatro camadas, visualmente</div>
+      <div class="slide-sub">De fora para dentro: margin (amarelo), border (vermelho), padding (verde) e content (azul).</div>
+      <div class="boxmodel-demo">
+        <div class="bm-margin">
+          <div class="bm-border">
+            <div class="bm-padding">
+              <div class="bm-content">content</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hl"><strong>Repare:</strong> mesmo um elemento sem nenhum estilo definido já tem essas 4 camadas — só que com valores zerados ou padrão do navegador.</div>`
+  },
+  {
+    id:'boxsizing', time:5,
+    render:()=>`
+      <div class="eyebrow">Conceito central · 5 minutos</div>
+      <div class="slide-title">box-sizing: a pegadinha do width</div>
+      <div class="slide-sub">Por padrão, o width NÃO inclui padding e border — isso surpreende todo iniciante pelo menos uma vez.</div>
+      <div class="compare">
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#fef2f2;color:#dc2626">Padrão do navegador</div>
+          <div class="comp-body"><code>width: 200px</code> + <code>padding: 20px</code> + <code>border: 5px</code><br><br>
+            Largura REAL na tela:<br>
+            <code>200 + 20+20 + 5+5 = 250px</code><br><br>
+            O elemento fica maior do que o esperado.</div>
+        </div>
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#f0fdf4;color:#15803d">Com box-sizing: border-box</div>
+          <div class="comp-body"><code>box-sizing: border-box;</code><br><br>
+            Largura REAL na tela:<br>
+            <code>exatamente 200px</code><br><br>
+            padding e border são descontados de DENTRO do width.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Boa prática comum:</strong> começar todo CSS com <code>* { box-sizing: border-box; }</code> para evitar essa pegadinha em todo o projeto.</div>`
+  },
+  {
+    id:'display', time:5,
+    render:()=>`
+      <div class="eyebrow">Prática interativa · 5 minutos</div>
+      <div class="slide-title">display — clique para explorar</div>
+      <div class="slide-sub">Como cada caixa se comporta na "fila" de elementos.</div>
+      <div class="tag-grid">
+        <div class="tag-item" onclick="showTag(this,'display: block','Ocupa a linha inteira e sempre começa em uma nova linha — como um quadro grande que toma a parede toda. Exemplos padrão: div, p, h1, section.')">
+          <div class="tag-code">block</div><div class="tag-name">Linha inteira</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'display: inline','Ocupa só o espaço do conteúdo, fica lado a lado com outros elementos. width e height NÃO funcionam. Exemplos padrão: span, a, strong, em.')">
+          <div class="tag-code">inline</div><div class="tag-name">Lado a lado, sem tamanho</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'display: inline-block','O melhor dos dois mundos: fica lado a lado como o inline, mas aceita width, height, padding e margin como o block.')">
+          <div class="tag-code">inline-block</div><div class="tag-name">Lado a lado, com tamanho</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'display: none','Remove o elemento completamente — nem o espaço dele fica reservado na página. É como guardar o quadro no depósito.')">
+          <div class="tag-code">none</div><div class="tag-name">Escondido</div>
+        </div>
+      </div>
+      <div class="tag-preview" id="tag-prev">Clique em um valor acima para ver a descrição aqui.</div>`
+  },
+  {
+    id:'codigo', time:3,
+    render:()=>`
+      <div class="eyebrow">Código na prática · 3 minutos</div>
+      <div class="slide-title">Tudo junto: um card com espaçamento correto</div>
+      <div class="slide-sub">Assim ficará o CSS de vocês na prática de hoje.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · .card</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">*</span> <span class="t">{</span>
+  <span class="a">box-sizing</span>: <span class="s">border-box</span><span class="t">;</span>
+<span class="t">}</span>
+
+<span class="k">.card</span> <span class="t">{</span>
+  <span class="a">width</span>: <span class="s">180px</span><span class="t">;</span>
+  <span class="a">padding</span>: <span class="s">16px</span><span class="t">;</span>
+  <span class="a">border</span>: <span class="s">1px solid #cbd5e1</span><span class="t">;</span>
+  <span class="a">margin</span>: <span class="s">10px</span><span class="t">;</span>
+  <span class="a">display</span>: <span class="s">inline-block</span><span class="t">;</span>
+<span class="t">}</span></pre>
+      </div>`
+  },
+  {
+    id:'quiz', time:3,
+    render:()=>`
+      <div class="eyebrow">Verificação de aprendizagem · 3 minutos</div>
+      <div class="slide-title">Quiz rápido — turma responde junto</div>
+      <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+      <div class="quiz-block">
+        <div class="quiz-q">1. Você define <code>width: 100px</code> em um elemento <code>&lt;span&gt;</code> sem mudar o display. O que acontece?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>Fica com 100px de largura</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>O width é ignorado, pois span é inline por padrão</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>Dá erro no navegador</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>Fica com 100% da tela</div>
+        </div>
+        <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! Elementos inline ignoram width/height. Para funcionar, seria preciso mudar para inline-block ou block.</div>
+      </div>
+      <div class="quiz-block">
+        <div class="quiz-q">2. Por que muitos desenvolvedores começam o CSS com <code>* { box-sizing: border-box; }</code>?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>Só por estética do código</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>Para que width represente o tamanho total, incluindo padding e border</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>Porque é obrigatório</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>Para remover a margem de todos os elementos</div>
+        </div>
+        <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! Isso evita a "surpresa" de elementos ficarem maiores que o esperado por causa do padding e da border.</div>
+      </div>`
+  },
+  {
+    id:'curiosidades', time:1,
+    render:()=>`
+      <div class="eyebrow">Bônus · 1 minuto</div>
+      <div class="slide-title">Você sabia?</div>
+      <div class="slide-sub">Fatos sobre box model que valem compartilhar com a turma.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🔍</div>
+          <div class="card-title">O DevTools mostra o box model</div>
+          <div class="card-body">Na aba Elements do DevTools, a aba "Computed" exibe visualmente as 4 camadas de qualquer elemento selecionado.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">🤝</div>
+          <div class="card-title">Margens podem "colapsar"</div>
+          <div class="card-body">Quando dois elementos block empilhados têm margem, o navegador às vezes usa só a maior das duas, não a soma — um comportamento chamado "margin collapse".</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-title">margin pode ser negativa</div>
+          <div class="card-body">Diferente de padding, a margin aceita valores negativos, "puxando" o elemento para mais perto do vizinho.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">👻</div>
+          <div class="card-title">display: none ≠ visibility: hidden</div>
+          <div class="card-body">display:none remove o espaço reservado. visibility:hidden esconde o elemento, mas o espaço continua lá, vazio.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'fechamento', time:1,
+    render:()=>`
+      <div class="eyebrow">Encerramento · 1 minuto</div>
+      <div class="slide-title">Recapitulando e partindo para a prática</div>
+      <div class="slide-sub">O que aprendemos nesta exposição e o que fazemos agora.</div>
+      <div class="reflect-list">
+        <div class="reflect-item">
+          <div class="reflect-num">1</div>
+          <div class="reflect-text"><strong>Toda caixa tem 4 camadas:</strong> content, padding, border e margin, de dentro para fora.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">2</div>
+          <div class="reflect-text"><strong>box-sizing: border-box</strong> torna o cálculo de tamanho muito mais previsível.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">3</div>
+          <div class="reflect-text"><strong>display controla o comportamento na fila:</strong> block, inline, inline-block e none.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">4</div>
+          <div class="reflect-text"><strong>Agora é hora de construir.</strong> Vamos montar juntos, ao vivo, cards com espaçamento correto antes da prática individual.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Para casa (curiosidade opcional):</strong> Abra o DevTools em qualquer site, clique em um elemento e veja a aba "Computed" — meça as 4 camadas do box model dele.</div>`
+  }
+];
+
+let cur = 0;
+let timerInterval = null;
+let timerStarted = false;
+
+function buildDots() {
+  const bar = document.getElementById('dots-bar');
+  SLIDES.forEach((s, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i + 1);
+    d.onclick = () => goTo(i);
+    bar.appendChild(d);
+    if (i < SLIDES.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'dot-sep';
+      bar.appendChild(sep);
+    }
+  });
+}
+
+function buildSlides() {
+  const wrap = document.getElementById('slide-wrap');
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.id = 'sl-' + s.id;
+    div.innerHTML = s.render();
+    wrap.appendChild(div);
+  });
+}
+
+function goTo(i) {
+  const prev = cur;
+  document.getElementById('sl-' + SLIDES[prev].id).classList.remove('active');
+  const dots = document.querySelectorAll('.dot');
+  dots[prev].classList.remove('active');
+  if (i > prev) dots[prev].classList.add('done');
+
+  cur = i;
+  const el = document.getElementById('sl-' + SLIDES[cur].id);
+  el.innerHTML = SLIDES[cur].render();
+  el.classList.add('active');
+  dots[cur].classList.add('active');
+  dots[cur].classList.remove('done');
+
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = cur === SLIDES.length - 1;
+  btnNext.textContent = cur === SLIDES.length - 1 ? 'Finalizar' : 'Próximo →';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + SLIDES.length;
+
+  if (!timerStarted) { timerStarted = true; startTimer(); }
+}
+
+function nav(d) {
+  const ni = cur + d;
+  if (ni >= 0 && ni < SLIDES.length) goTo(ni);
+}
+
+function startTimer() {
+  let rem = 30 * 60;
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(timerInterval); el.textContent = '00:00'; el.className = 'timer danger'; return; }
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if (rem <= 300) el.className = 'timer warn';
+    if (rem <= 60)  el.className = 'timer danger';
+  }, 1000);
+}
+
+function tlClick(i) {
+  document.querySelectorAll('.tl-item').forEach((el, j) => el.classList.toggle('tl-open', j === i));
+}
+
+function showTag(el, tag, desc) {
+  document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('tag-on'));
+  el.classList.add('tag-on');
+  document.getElementById('tag-prev').innerHTML =
+    '<strong>' + tag + '</strong><br>' + desc;
+}
+
+function answer(el, type, fbId) {
+  const block = el.closest('.quiz-block');
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o === el) o.classList.add(type === 'c' ? 'correct' : 'wrong');
+    else o.classList.add('dimmed');
+  });
+  const fb = document.getElementById(fbId);
+  if (type !== 'c') {
+    fb.style.background = '#fef2f2';
+    fb.style.color = '#dc2626';
+    fb.textContent = 'Não exatamente — pense em como cada display trata width, height e a fila de elementos.';
+  }
+  fb.style.display = 'block';
+}
+
+buildDots();
+buildSlides();
+document.getElementById('btn-prev').disabled = true;
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 05 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a05_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — Responsividade e Media Queries · Aula 08</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+
+/* PROGRESS DOTS */
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+
+/* SLIDE AREA */
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body em{font-style:italic}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* DEVICE BREAKPOINT VISUAL */
+.devices-row{display:flex;align-items:flex-end;justify-content:center;gap:20px;margin:14px 0 18px;flex-wrap:wrap}
+.device{display:flex;flex-direction:column;align-items:center;gap:6px}
+.device-screen{border:3px solid #1e293b;border-radius:8px;background:#eff6ff;display:flex;flex-direction:column;gap:4px;padding:6px}
+.device-block{background:#93c5fd;border-radius:3px}
+.device-label{font-size:11px;font-weight:600;color:#475569}
+.device-w{font-size:10px;color:#94a3b8;font-family:'Courier New',monospace}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e2e8f0}
+.tl-item{position:relative;margin-bottom:14px;cursor:pointer}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;transition:all .2s}
+.tl-item:hover::before{background:#3b82f6;border-color:#3b82f6}
+.tl-item.tl-open::before{background:#1d4ed8;border-color:#1d4ed8;transform:scale(1.25)}
+.tl-year{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px}
+.tl-head{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:3px}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.tl-item.tl-open .tl-desc{max-height:160px}
+.tl-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:5px}
+
+/* CODE */
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.kv{color:#6ee7b7}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.comp-side{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.comp-hdr{padding:8px 14px;font-size:12px;font-weight:600}
+.comp-body{padding:10px 14px;font-size:12px;color:#64748b;line-height:1.65}
+.comp-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TAG EXPLORER */
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+
+/* QUIZ */
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+
+/* REFLECT */
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+
+/* HIGHLIGHT BOX */
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+
+/* NAV BAR */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 08</span>
+      <div>
+        <div class="hdr-title">Responsividade e Media Queries — Exposição Dialogada</div>
+        <div class="hdr-sub">30 minutos · Projetor · Turma</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+  <button onclick="window.location.href='a08_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+
+  <div class="dots" id="dots-bar"></div>
+
+  <div class="slide-wrap" id="slide-wrap"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 9</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  {
+    id:'intro', time:3,
+    render:()=>`
+      <div class="eyebrow">Abertura · 3 minutos</div>
+      <div class="slide-title">A casa inteligente que se reconfigura sozinha</div>
+      <div class="slide-sub">Até aqui, nossa planta baixa era fixa. E se a mesma casa precisasse funcionar tanto num apartamento pequeno quanto numa casa grande?</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">📱</div>
+          <div class="card-title">Terreno pequeno (celular)</div>
+          <div class="card-body">Móveis se empilham, só o essencial fica visível.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">💻</div>
+          <div class="card-title">Terreno grande (desktop)</div>
+          <div class="card-body">A casa se espalha, tudo visível ao mesmo tempo.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📏</div>
+          <div class="card-title">Media queries</div>
+          <div class="card-body">As "regras de reforma automática" da casa.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🖼️</div>
+          <div class="card-title">Unidades relativas</div>
+          <div class="card-body">Móveis e quadros que se ajustam proporcionalmente.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Pergunta para a turma:</strong> Quem já visitou um site no celular e teve que ficar dando zoom e arrastando a tela pros lados? É esse problema que resolvemos hoje.</div>`
+  },
+  {
+    id:'porque', time:5,
+    render:()=>`
+      <div class="eyebrow">Contexto · 5 minutos</div>
+      <div class="slide-title">Por que design responsivo é indispensável</div>
+      <div class="slide-sub">A maior parte do tráfego de muitos sites hoje vem de celulares — um layout que só funciona em telas grandes exclui usuários reais.</div>
+      <div class="devices-row">
+        <div class="device">
+          <div class="device-screen" style="width:44px;height:78px">
+            <div class="device-block" style="height:8px"></div>
+            <div class="device-block" style="height:8px"></div>
+            <div class="device-block" style="height:8px"></div>
+          </div>
+          <div class="device-label">Celular</div>
+          <div class="device-w">até 480px</div>
+        </div>
+        <div class="device">
+          <div class="device-screen" style="width:80px;height:60px;flex-direction:row">
+            <div class="device-block" style="width:14px"></div>
+            <div class="device-block" style="flex:1"></div>
+          </div>
+          <div class="device-label">Tablet</div>
+          <div class="device-w">até 768px</div>
+        </div>
+        <div class="device">
+          <div class="device-screen" style="width:140px;height:50px;flex-direction:row">
+            <div class="device-block" style="width:24px"></div>
+            <div class="device-block" style="flex:2"></div>
+            <div class="device-block" style="flex:1"></div>
+          </div>
+          <div class="device-label">Desktop</div>
+          <div class="device-w">1024px+</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Regra prática:</strong> se seu layout só foi testado em uma tela grande, ele provavelmente está quebrado para uma parte real dos seus usuários.</div>`
+  },
+  {
+    id:'sintaxe', time:6,
+    render:()=>`
+      <div class="eyebrow">Ferramenta principal · 6 minutos</div>
+      <div class="slide-title">Sintaxe das media queries</div>
+      <div class="slide-sub">@media aplica um bloco de CSS só quando a condição é verdadeira.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · media queries</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">.menu</span> <span class="t">{</span> <span class="a">display</span>: <span class="s">flex</span><span class="t">;</span> <span class="t">}</span>
+
+<span class="k">@media</span> <span class="t">(</span><span class="a">max-width</span>: <span class="s">768px</span><span class="t">)</span> <span class="t">{</span>
+  <span class="c">/* só vale em telas de 768px OU MENOS */</span>
+  <span class="k">.menu</span> <span class="t">{</span> <span class="a">flex-direction</span>: <span class="s">column</span><span class="t">;</span> <span class="t">}</span>
+<span class="t">}</span>
+
+<span class="k">@media</span> <span class="t">(</span><span class="a">min-width</span>: <span class="s">1024px</span><span class="t">)</span> <span class="t">{</span>
+  <span class="c">/* só vale em telas de 1024px OU MAIS */</span>
+  <span class="k">.dashboard</span> <span class="t">{</span> <span class="a">grid-template-columns</span>: <span class="s">260px 1fr</span><span class="t">;</span> <span class="t">}</span>
+<span class="t">}</span></pre>
+      </div>
+      <div class="hl"><strong>max-width</strong> = "até este tamanho". <strong>min-width</strong> = "a partir deste tamanho".</div>`
+  },
+  {
+    id:'breakpoints', time:5,
+    render:()=>`
+      <div class="eyebrow">Convenções do mercado · 5 minutos</div>
+      <div class="slide-title">Breakpoints comuns</div>
+      <div class="slide-sub">Pontos de quebra — larguras em que o layout muda de comportamento.</div>
+      <div class="compare">
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#eff6ff;color:#1d4ed8">Valores de referência</div>
+          <div class="comp-body">
+            <code>480px</code> — celulares<br>
+            <code>768px</code> — tablets<br>
+            <code>1024px</code> — notebooks/desktops menores
+          </div>
+        </div>
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#fdf4ff;color:#a21caf">Não são regras fixas</div>
+          <div class="comp-body">
+            São convenções de mercado, não valores obrigatórios do CSS.<br><br>
+            O ideal é testar e ajustar onde SEU layout realmente "quebra".
+          </div>
+        </div>
+      </div>
+      <div class="hl"><strong>Ferramenta útil:</strong> o modo responsivo do DevTools (ícone de celular/tablet) permite redimensionar a tela e ver exatamente onde o layout começa a ficar ruim.</div>`
+  },
+  {
+    id:'unidades', time:5,
+    render:()=>`
+      <div class="eyebrow">Detalhe fino · 5 minutos</div>
+      <div class="slide-title">Imagens fluídas e unidades relativas</div>
+      <div class="slide-sub">px é um valor fixo. rem, %, vw e vh "respiram" junto com o tamanho da tela.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · unidades relativas</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">img</span> <span class="t">{</span>
+  <span class="a">max-width</span>: <span class="s">100%</span><span class="t">;</span> <span class="c">/* nunca ultrapassa o container pai */</span>
+  <span class="a">height</span>: <span class="s">auto</span><span class="t">;</span> <span class="c">/* mantém a proporção original */</span>
+<span class="t">}</span>
+
+<span class="k">.titulo</span> <span class="t">{</span> <span class="a">font-size</span>: <span class="s">2rem</span><span class="t">;</span> <span class="t">}</span>   <span class="c">/* relativo à fonte raiz */</span>
+<span class="k">.secao</span>  <span class="t">{</span> <span class="a">padding</span>: <span class="s">5vw</span><span class="t">;</span> <span class="t">}</span>    <span class="c">/* 5% da largura da tela */</span></pre>
+      </div>`
+  },
+  {
+    id:'mobilefirst', time:4,
+    render:()=>`
+      <div class="eyebrow">Filosofia de projeto · 4 minutos</div>
+      <div class="slide-title">Mobile first: comece pequeno, cresça depois</div>
+      <div class="slide-sub">O CSS "base" (sem media query) já é pensado para celular. Conforme a tela cresce, acrescentamos regras com min-width.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">CSS · mobile first</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">.cards-stats</span> <span class="t">{</span>
+  <span class="a">display</span>: <span class="s">grid</span><span class="t">;</span>
+  <span class="a">grid-template-columns</span>: <span class="s">1fr</span><span class="t">;</span> <span class="c">/* base: 1 coluna, pensando no celular */</span>
+<span class="t">}</span>
+
+<span class="k">@media</span> <span class="t">(</span><span class="a">min-width</span>: <span class="s">768px</span><span class="t">)</span> <span class="t">{</span>
+  <span class="k">.cards-stats</span> <span class="t">{</span> <span class="a">grid-template-columns</span>: <span class="s">repeat(2, 1fr)</span><span class="t">;</span> <span class="t">}</span>
+<span class="t">}</span>
+
+<span class="k">@media</span> <span class="t">(</span><span class="a">min-width</span>: <span class="s">1024px</span><span class="t">)</span> <span class="t">{</span>
+  <span class="k">.cards-stats</span> <span class="t">{</span> <span class="a">grid-template-columns</span>: <span class="s">repeat(3, 1fr)</span><span class="t">;</span> <span class="t">}</span>
+<span class="t">}</span></pre>
+      </div>`
+  },
+  {
+    id:'quiz', time:3,
+    render:()=>`
+      <div class="eyebrow">Verificação de aprendizagem · 3 minutos</div>
+      <div class="slide-title">Quiz rápido — turma responde junto</div>
+      <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+      <div class="quiz-block">
+        <div class="quiz-q">1. Em uma abordagem mobile first, qual propriedade você usa para acrescentar regras conforme a tela cresce?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>max-width</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>min-width</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>max-height</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>aspect-ratio</div>
+        </div>
+        <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! min-width acrescenta regras a partir de um tamanho de tela — perfeito para o crescimento gradual do mobile first.</div>
+      </div>
+      <div class="quiz-block">
+        <div class="quiz-q">2. Uma imagem tem width:800px fixo no CSS. O que acontece em uma tela de celular de 375px?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>A imagem encolhe automaticamente</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>A imagem ultrapassa a tela, causando scroll horizontal</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>A imagem desaparece</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>O navegador ajusta sozinho, sem CSS extra</div>
+        </div>
+        <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! Por isso usamos max-width:100% nas imagens — sem isso, um valor fixo em px "vaza" da tela em telas menores.</div>
+      </div>`
+  },
+  {
+    id:'curiosidades', time:1,
+    render:()=>`
+      <div class="eyebrow">Bônus · 1 minuto</div>
+      <div class="slide-title">Você sabia?</div>
+      <div class="slide-sub">Fatos sobre responsividade que valem compartilhar com a turma.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">📐</div>
+          <div class="card-title">A meta tag viewport é obrigatória</div>
+          <div class="card-body">Sem <code>&lt;meta name="viewport"&gt;</code>, o navegador do celular renderiza a página como se fosse um desktop, e depois encolhe tudo — ficando ilegível.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">🔧</div>
+          <div class="card-title">Grid e Flexbox já ajudam sozinhos</div>
+          <div class="card-body">flex-wrap e minmax() no Grid já criam parte da responsividade automaticamente, antes mesmo de qualquer media query.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🖥️</div>
+          <div class="card-title">"Desktop first" também existe</div>
+          <div class="card-body">Alguns projetos legados usam max-width como base e vão reduzindo — mas mobile first é a prática recomendada hoje.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">Teste em dispositivos reais</div>
+          <div class="card-body">O modo responsivo do navegador é ótimo para começar, mas nada substitui testar em um celular de verdade antes de publicar.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'fechamento', time:1,
+    render:()=>`
+      <div class="eyebrow">Encerramento · 1 minuto</div>
+      <div class="slide-title">Recapitulando e partindo para a prática</div>
+      <div class="slide-sub">O que aprendemos nesta exposição e o que fazemos agora.</div>
+      <div class="reflect-list">
+        <div class="reflect-item">
+          <div class="reflect-num">1</div>
+          <div class="reflect-text"><strong>Media queries</strong> aplicam CSS condicionalmente, baseado no tamanho da tela.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">2</div>
+          <div class="reflect-text"><strong>Unidades relativas e imagens fluídas</strong> reduzem a necessidade de media queries manuais.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">3</div>
+          <div class="reflect-text"><strong>Mobile first:</strong> comece pelo celular, cresça com min-width.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">4</div>
+          <div class="reflect-text"><strong>Agora é hora de construir.</strong> Vamos deixar juntos, ao vivo, o dashboard da aula passada totalmente responsivo, antes da prática individual.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Próxima fase do curso:</strong> a partir da próxima aula, começamos JavaScript — hora de dar vida e interatividade a tudo que construímos até aqui.</div>`
+  }
+];
+
+let cur = 0;
+let timerInterval = null;
+let timerStarted = false;
+
+function buildDots() {
+  const bar = document.getElementById('dots-bar');
+  SLIDES.forEach((s, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i + 1);
+    d.onclick = () => goTo(i);
+    bar.appendChild(d);
+    if (i < SLIDES.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'dot-sep';
+      bar.appendChild(sep);
+    }
+  });
+}
+
+function buildSlides() {
+  const wrap = document.getElementById('slide-wrap');
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.id = 'sl-' + s.id;
+    div.innerHTML = s.render();
+    wrap.appendChild(div);
+  });
+}
+
+function goTo(i) {
+  const prev = cur;
+  document.getElementById('sl-' + SLIDES[prev].id).classList.remove('active');
+  const dots = document.querySelectorAll('.dot');
+  dots[prev].classList.remove('active');
+  if (i > prev) dots[prev].classList.add('done');
+
+  cur = i;
+  const el = document.getElementById('sl-' + SLIDES[cur].id);
+  el.innerHTML = SLIDES[cur].render();
+  el.classList.add('active');
+  dots[cur].classList.add('active');
+  dots[cur].classList.remove('done');
+
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = cur === SLIDES.length - 1;
+  btnNext.textContent = cur === SLIDES.length - 1 ? 'Finalizar' : 'Próximo →';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + SLIDES.length;
+
+  if (!timerStarted) { timerStarted = true; startTimer(); }
+}
+
+function nav(d) {
+  const ni = cur + d;
+  if (ni >= 0 && ni < SLIDES.length) goTo(ni);
+}
+
+function startTimer() {
+  let rem = 30 * 60;
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(timerInterval); el.textContent = '00:00'; el.className = 'timer danger'; return; }
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if (rem <= 300) el.className = 'timer warn';
+    if (rem <= 60)  el.className = 'timer danger';
+  }, 1000);
+}
+
+function tlClick(i) {
+  document.querySelectorAll('.tl-item').forEach((el, j) => el.classList.toggle('tl-open', j === i));
+}
+
+function showTag(el, tag, desc) {
+  document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('tag-on'));
+  el.classList.add('tag-on');
+  document.getElementById('tag-prev').innerHTML =
+    '<strong>' + tag + '</strong><br>' + desc;
+}
+
+function answer(el, type, fbId) {
+  const block = el.closest('.quiz-block');
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o === el) o.classList.add(type === 'c' ? 'correct' : 'wrong');
+    else o.classList.add('dimmed');
+  });
+  const fb = document.getElementById(fbId);
+  if (type !== 'c') {
+    fb.style.background = '#fef2f2';
+    fb.style.color = '#dc2626';
+    fb.textContent = 'Não exatamente — pense em qual direção o layout deve crescer.';
+  }
+  fb.style.display = 'block';
+}
+
+buildDots();
+buildSlides();
+document.getElementById('btn-prev').disabled = true;
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 08 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a08_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>
