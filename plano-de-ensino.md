@@ -238,20 +238,4 @@ Organizado aula a aula, na mesma ordem do Cronograma abaixo.
 
 ---
 
-## Publicação no GitHub
 
-O **GitHub Pages** é gratuito, permite personalizar o domínio e é amplamente usado para publicar materiais de curso.
-
-### Passo a passo
-
-1. Crie uma conta em <https://github.com>, caso ainda não tenha.
-2. Crie um repositório novo → nome sugerido: **fundamentos-web-http-api**.
-3. Marque **Add a README file** → clique em **Create repository**.
-4. Faça o upload deste `plano-de-ensino.md`, do `README.md` do curso e dos arquivos de aula (`.md`).
-5. Vá em **Settings** → **Pages** → **Branch: main** → **Save**.
-
-Em cerca de 1 minuto, o material estará disponível em:
-
-**https://karizeviecelli.github.io/fundamentos-web-http-api/**
-
-**Vantagem:** link permanente e profissional, que pode ser atualizado sempre que novas aulas forem publicadas.
