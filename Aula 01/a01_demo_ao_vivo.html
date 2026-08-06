@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Demonstração ao vivo — Aula 01 HTTP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}
+
+.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:1100px;margin:0 auto}
+
+.panel{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.panel-title{font-size:12px;font-weight:500;color:#64748b}
+.dots-row{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+
+.editor-body{background:#1E293B;min-height:340px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.75;color:#94A3B8;overflow:hidden;position:relative}
+#code-output{white-space:pre-wrap;word-break:break-all}
+.cursor{display:inline-block;width:2px;height:14px;background:#60A5FA;vertical-align:middle;animation:blink .9s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.preview-body{background:#ffffff;min-height:340px;padding:16px;overflow-y:auto}
+
+.step-bar{padding:12px 16px;border-top:1px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;gap:10px;grid-column:1/-1}
+.step-label{font-size:12px;color:#64748b;flex:1;line-height:1.4}
+.step-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;background:#eff6ff;color:#1d4ed8}
+.ctrl-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#1e293b;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.ctrl-btn:hover{background:#f1f5f9}
+.ctrl-btn.go{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.ctrl-btn.go:hover{background:#1e40af}
+.ctrl-btn:disabled{opacity:.35;pointer-events:none}
+
+.narr-box{grid-column:1/-1;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;background:#f8fafc;font-size:13px;color:#475569;line-height:1.6;min-height:52px}
+.narr-box strong{color:#1e293b;font-weight:600}
+
+.prog-track{height:3px;background:#e2e8f0;border-radius:2px;grid-column:1/-1;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s ease;width:0%}
+
+.page-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.page-title h1{font-size:16px;font-weight:600;color:#1e293b}
+.page-title p{font-size:12px;color:#94a3b8}
+
+.k{color:#93C5FD}
+.kv{color:#6EE7B7}
+.a{color:#FDE68A}
+.s{color:#FDA4AF}
+.t{color:#E2E8F0}
+.c{color:#475569;font-style:italic}
+
+@media(max-width:700px){
+  .demo-wrap{grid-template-columns:1fr}
+  .panel:last-of-type{display:none}
+}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <div class="page-title">
+    <h1>Demonstração ao vivo — Aula 01</h1>
+    <p>Docente demonstra · Alunos acompanham &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p>
+
+    <button onclick="window.location.href='a01_pratica_guiada.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📝 Prática →</button></div>
+
+  <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">DevTools — aba Network</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="editor-body"><span id="code-output"></span><span class="cursor" id="cur"></span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">Navegador — o que o usuário vê</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="preview-body" id="preview"></div>
+  </div>
+
+  <div class="narr-box" id="narr">Pronto para começar. Clique em <strong>Iniciar digitação</strong> para ver o docente abrindo o DevTools e observando requisições reais.</div>
+
+  <div class="step-bar">
+    <span class="step-badge" id="step-badge">Etapa 1 / 8</span>
+    <span class="step-label" id="step-desc">Abrindo o DevTools e a aba Network</span>
+    <button class="ctrl-btn" id="btn-prev" onclick="prevStep()" disabled>&#8592; Anterior</button>
+    <button class="ctrl-btn go" id="btn-play" onclick="playStep()">Iniciar digitação</button>
+    <button class="ctrl-btn" id="btn-next" onclick="nextStep()" disabled>Próxima &#8594;</button>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {
+    label: "Abrindo o DevTools e a aba Network",
+    narr: "<strong>Docente:</strong> \"Aperto <code>F12</code> (ou <code>Ctrl+Shift+I</code>) para abrir o DevTools e clico na aba <code>Network</code>. É aqui que vamos ver, em tempo real, todas as conversas entre o navegador e o servidor.\"",
+    code: `<span class="c">&lt;!-- Console do DevTools --&gt;</span>\n<span class="t">F12 → aba "Network"</span>\n<span class="t">Marcar "Preserve log" e "Disable cache"</span>\n<span class="c">&lt;!-- lista de requisições ainda vazia --&gt;</span>`,
+    preview: `<p style="font-size:12px;color:#94a3b8;font-style:italic">Nenhuma página carregada ainda. Vamos digitar um endereço.</p>`
+  },
+  {
+    label: "Digitando a URL e pressionando Enter",
+    narr: "<strong>Docente:</strong> \"Digito <code>www.exemplo.com</code> na barra de endereços e pressiono Enter. A partir daqui, o navegador vai montar e enviar a primeira requisição HTTP.\"",
+    code: `<span class="t">Barra de endereços:</span>\n<span class="s">www.exemplo.com</span>  <span class="c">&lt;!-- Enter --&gt;</span>\n\n<span class="c">&lt;!-- o DNS traduz o nome para um IP --&gt;</span>\n<span class="t">Resolvendo DNS... 200.150.10.5</span>`,
+    preview: `<div style="display:flex;align-items:center;gap:8px;font-family:system-ui;font-size:12px;color:#64748b"><div style="width:14px;height:14px;border:2px solid #cbd5e1;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite"></div>Carregando...</div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>`
+  },
+  {
+    label: "Primeira requisição: o documento HTML",
+    narr: "<strong>Docente:</strong> \"Vejam a primeira linha aparecer no Network: método <code>GET</code>, nome <code>/</code>, status <code>200</code>, tipo <code>document</code>. É o próprio arquivo HTML da página sendo baixado.\"",
+    code: `<span class="k">Name</span>          <span class="k">Status</span>  <span class="k">Type</span>      <span class="k">Time</span>\n<span class="t">/</span>             <span class="kv">200</span>     <span class="a">document</span>  <span class="t">120ms</span>`,
+    preview: `<h1 style="font-size:16px;font-family:system-ui;color:#1e293b">Bem-vindo ao Exemplo</h1><p style="font-size:12px;color:#94a3b8;font-family:system-ui;margin-top:4px">O esqueleto HTML acabou de chegar — ainda sem estilo.</p>`
+  },
+  {
+    label: "Recursos estáticos em cascata: CSS, imagens e JS",
+    narr: "<strong>Docente:</strong> \"O navegador lê o HTML e descobre que precisa de mais arquivos: uma folha de estilo, uma imagem, um script. Cada um vira uma nova linha na lista, com seu próprio status e tipo.\"",
+    code: `<span class="k">Name</span>          <span class="k">Status</span>  <span class="k">Type</span>       <span class="k">Time</span>\n<span class="t">/</span>             <span class="kv">200</span>     <span class="a">document</span>   <span class="t">120ms</span>\n<span class="t">estilos.css</span>   <span class="kv">200</span>     <span class="a">stylesheet</span> <span class="t">45ms</span>\n<span class="t">logo.png</span>      <span class="kv">200</span>     <span class="a">image</span>      <span class="t">80ms</span>\n<span class="t">app.js</span>        <span class="kv">200</span>     <span class="a">script</span>     <span class="t">60ms</span>`,
+    preview: `<div style="font-family:system-ui"><header style="display:flex;align-items:center;gap:8px;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:8px"><div style="width:24px;height:24px;background:#3b82f6;border-radius:6px"></div><h1 style="font-size:16px;color:#1e293b">Bem-vindo ao Exemplo</h1></header><p style="font-size:12px;color:#64748b">Agora a página já tem cor, logo e estilo aplicado.</p></div>`
+  },
+  {
+    label: "Uma API respondendo com JSON",
+    narr: "<strong>Docente:</strong> \"Essa linha é diferente: tipo <code>fetch</code>, e a resposta não é HTML — é <code>JSON</code>. É assim que uma página busca dados dinâmicos, sem recarregar tudo. Vamos estudar isso a fundo mais pra frente no curso.\"",
+    code: `<span class="k">Name</span>              <span class="k">Status</span>  <span class="k">Type</span>   <span class="k">Time</span>\n<span class="t">/api/produtos</span>    <span class="kv">200</span>     <span class="a">fetch</span>  <span class="t">95ms</span>\n\n<span class="c">&lt;!-- corpo da resposta (JSON) --&gt;</span>\n<span class="t">[</span>\n  <span class="t">{ </span><span class="a">"nome"</span><span class="t">: </span><span class="s">"Caneta"</span><span class="t">, </span><span class="a">"preco"</span><span class="t">: 3.5 },</span>\n  <span class="t">{ </span><span class="a">"nome"</span><span class="t">: </span><span class="s">"Caderno"</span><span class="t">, </span><span class="a">"preco"</span><span class="t">: 12.0 }</span>\n<span class="t">]</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#475569"><strong style="display:block;margin-bottom:6px;color:#1e293b">Produtos</strong><div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px;margin-bottom:4px">Caneta — R$ 3,50</div><div style="border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px">Caderno — R$ 12,00</div></div>`
+  },
+  {
+    label: "Simulando um erro: recurso não encontrado",
+    narr: "<strong>Docente:</strong> \"Vou renomear a imagem de propósito. Vejam o que acontece: a requisição volta com status <code>404</code>. O servidor respondeu, mas não achou o arquivo pedido.\"",
+    code: `<span class="k">Name</span>              <span class="k">Status</span>  <span class="k">Type</span>   <span class="k">Time</span>\n<span class="t">logo-errada.png</span>  <span class="s">404</span>     <span class="a">image</span>  <span class="t">30ms</span>\n\n<span class="c">&lt;!-- resposta do servidor --&gt;</span>\n<span class="k">HTTP/1.1</span> <span class="s">404</span> <span class="t">Not Found</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border:2px dashed #cbd5e1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px">🖼️</div>Imagem não encontrada (404)</div>`
+  },
+  {
+    label: "Inspecionando os headers de uma requisição",
+    narr: "<strong>Docente:</strong> \"Clicando em qualquer linha, o DevTools abre um painel com os headers de requisição e de resposta. Aqui dá pra ver exatamente o que foi enviado e o que voltou.\"",
+    code: `<span class="c">&lt;!-- Request Headers --&gt;</span>\n<span class="a">Host:</span> <span class="s">www.exemplo.com</span>\n<span class="a">User-Agent:</span> <span class="s">Mozilla/5.0</span>\n<span class="a">Accept:</span> <span class="s">text/html</span>\n\n<span class="c">&lt;!-- Response Headers --&gt;</span>\n<span class="a">Content-Type:</span> <span class="s">text/html; charset=UTF-8</span>\n<span class="a">Content-Length:</span> <span class="s">1256</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#475569">Painel de detalhes aberto: aba <strong>Headers</strong> selecionada, mostrando requisição e resposta lado a lado.</div>`
+  },
+  {
+    label: "Resumo: o que observar no Network",
+    narr: "<strong>Docente:</strong> \"Toda vez que analisarem uma página, olhem para: método (o que foi pedido), status (como foi respondido), tipo (o que veio) e tempo (quanto demorou). É exatamente isso que vocês vão fazer na prática guiada.\"",
+    code: `<span class="k">Name</span>     <span class="c">→ qual recurso foi pedido</span>\n<span class="k">Method</span>   <span class="c">→ GET, POST, PUT, DELETE...</span>\n<span class="k">Status</span>   <span class="c">→ 200, 301, 404, 500...</span>\n<span class="k">Type</span>     <span class="c">→ document, stylesheet, image, fetch...</span>\n<span class="k">Time</span>     <span class="c">→ quanto tempo levou a resposta</span>`,
+    preview: `<div style="font-family:system-ui"><header style="display:flex;align-items:center;gap:8px;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin-bottom:8px"><div style="width:24px;height:24px;background:#3b82f6;border-radius:6px"></div><h1 style="font-size:16px;color:#1e293b">Bem-vindo ao Exemplo</h1></header><p style="font-size:12px;color:#64748b">Página completa: agora é a vez de vocês investigarem um site de verdade.</p></div>`
+  }
+];
+
+let cur=0, typing=false, typeTimer=null;
+
+function render(){
+  const s=STEPS[cur];
+  document.getElementById('step-badge').textContent=`Etapa ${cur+1} / ${STEPS.length}`;
+  document.getElementById('step-desc').textContent=s.label;
+  document.getElementById('prog').style.width=`${Math.round(((cur+1)/STEPS.length)*100)}%`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+  document.getElementById('narr').innerHTML=s.narr;
+  document.getElementById('preview').innerHTML=s.preview||'';
+}
+
+function showCode(s){
+  document.getElementById('code-output').innerHTML=s.code;
+}
+
+function playStep(){
+  if(typing)return;
+  typing=true;
+  const s=STEPS[cur];
+  const out=document.getElementById('code-output');
+  out.innerHTML='';
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-prev').disabled=true;
+  document.getElementById('btn-next').disabled=true;
+
+  const full=s.code;
+  const stripped=full.replace(/<[^>]+>/g,'');
+  const htmlParts=[];
+  let i=0,pos=0;
+  while(i<full.length){
+    if(full[i]==='<'){
+      const end=full.indexOf('>',i);
+      if(end!==-1){htmlParts.push({type:'tag',val:full.slice(i,end+1),pos});i=end+1;continue;}
+    }
+    htmlParts.push({type:'char',val:full[i],pos,ch:stripped[pos]||''});
+    pos++;i++;
+  }
+
+  let pi=0;
+  function tick(){
+    if(pi>=htmlParts.length){
+      typing=false;
+      document.getElementById('btn-play').textContent='Rever';
+      document.getElementById('btn-play').disabled=false;
+      document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+      document.getElementById('btn-prev').disabled=false;
+      return;
+    }
+    const p=htmlParts[pi];
+    if(p.type==='tag'){out.innerHTML+=p.val;pi++;tick();return;}
+    out.innerHTML+=p.val;
+    pi++;
+    const delay=p.ch==='\n'?60:p.ch===' '?20:Math.random()*25+18;
+    typeTimer=setTimeout(tick,delay);
+  }
+  tick();
+}
+
+function nextStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.min(cur+1,STEPS.length-1);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+function prevStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.max(cur-1,0);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+render();
+document.getElementById('code-output').innerHTML='';
+document.getElementById('btn-play').textContent='Iniciar digitação';
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a01_exposicao.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0;white-space:nowrap" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">&#8592; Exposição</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 01 &middot; 2 de 5 &middot; Demo ao Vivo<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a01_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Prática Guiada &#8594;</a>
+</div>
+</body>
+</html>

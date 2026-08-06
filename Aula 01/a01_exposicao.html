@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — Arquitetura Web e HTTP · Aula 01</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+
+/* PROGRESS DOTS */
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+
+/* SLIDE AREA */
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body em{font-style:italic}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e2e8f0}
+.tl-item{position:relative;margin-bottom:14px;cursor:pointer}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;transition:all .2s}
+.tl-item:hover::before{background:#3b82f6;border-color:#3b82f6}
+.tl-item.tl-open::before{background:#1d4ed8;border-color:#1d4ed8;transform:scale(1.25)}
+.tl-year{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px}
+.tl-head{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:3px}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.tl-item.tl-open .tl-desc{max-height:160px}
+.tl-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:5px}
+
+/* CODE */
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.kv{color:#6ee7b7}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.comp-side{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.comp-hdr{padding:8px 14px;font-size:12px;font-weight:600}
+.comp-body{padding:10px 14px;font-size:12px;color:#64748b;line-height:1.65}
+.comp-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TAG EXPLORER */
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+
+/* QUIZ */
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+
+/* REFLECT */
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+
+/* HIGHLIGHT BOX */
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+
+/* NAV BAR */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 01</span>
+      <div>
+        <div class="hdr-title">Arquitetura Web e Protocolo HTTP — Exposição Dialogada</div>
+        <div class="hdr-sub">30 minutos · Projetor · Turma</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+  <button onclick="window.location.href='a01_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+
+  <div class="dots" id="dots-bar"></div>
+
+  <div class="slide-wrap" id="slide-wrap"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 9</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  {
+    id:'intro', time:3,
+    render:()=>`
+      <div class="eyebrow">Abertura · 3 minutos</div>
+      <div class="slide-title">A Web é um restaurante</div>
+      <div class="slide-sub">Antes de escrever qualquer código, entenda o que acontece nos bastidores toda vez que vocês abrem um site — e por que isso importa para tudo que vamos construir neste curso.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🍽️</div>
+          <div class="card-title">Você é o cliente</div>
+          <div class="card-body">Quando digita um endereço no navegador, você está "fazendo um pedido" — assim como sentar à mesa e pedir um prato ao garçom.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">👨‍🍳</div>
+          <div class="card-title">O servidor é a cozinha</div>
+          <div class="card-body">Um computador ligado 24h, em algum lugar do mundo, recebe seu pedido, "prepara" a resposta e devolve para você.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <div class="card-title">Pergunta para a turma</div>
+          <div class="card-body"><em>"O que vocês fizeram na internet hoje antes de chegar aqui? WhatsApp, Instagram, Google..."</em><br>Tudo isso é cliente conversando com servidor.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">O que veremos hoje</div>
+          <div class="card-body">Cliente-servidor, DNS, hospedagem, o protocolo HTTP, seus métodos, os códigos de status e como observar tudo isso no navegador.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'timeline', time:8,
+    render:()=>`
+      <div class="eyebrow">Como a Web funciona · 8 minutos</div>
+      <div class="slide-title">Da URL até a página na tela</div>
+      <div class="slide-sub">Clique em cada etapa para expandir os detalhes.</div>
+      <div class="timeline" id="tl">
+        <div class="tl-item" onclick="tlClick(0)">
+          <div class="tl-year">Passo 1</div>
+          <div class="tl-head">Você digita o endereço</div>
+          <div class="tl-desc">Você digita, por exemplo, <code>www.exemplo.com</code> na barra de endereços e pressiona Enter.<br><span class="tl-tag" style="background:#eff6ff;color:#1d4ed8">cliente</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(1)">
+          <div class="tl-year">Passo 2</div>
+          <div class="tl-head">O DNS traduz o nome</div>
+          <div class="tl-desc">Ninguém decora endereços IP. O DNS funciona como uma lista telefônica gigante e traduz o nome em um endereço IP real, como <code>200.150.10.5</code>.<br><span class="tl-tag" style="background:#f0fdf4;color:#15803d">DNS</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(2)">
+          <div class="tl-year">Passo 3</div>
+          <div class="tl-head">O navegador se conecta ao servidor</div>
+          <div class="tl-desc">Com o IP em mãos, o navegador abre uma conexão com o servidor que está hospedado naquele endereço.<br><span class="tl-tag" style="background:#fffbeb;color:#92400e">hospedagem</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(3)">
+          <div class="tl-year">Passo 4</div>
+          <div class="tl-head">Uma requisição HTTP é enviada</div>
+          <div class="tl-desc">O navegador monta um "pedido" seguindo as regras do protocolo HTTP: qual método usar, qual recurso pedir, quais informações enviar.<br><span class="tl-tag" style="background:#ede9fe;color:#5b21b6">requisição</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(4)">
+          <div class="tl-year">Passo 5</div>
+          <div class="tl-head">O servidor processa o pedido</div>
+          <div class="tl-desc">O servidor (a "cozinha") localiza ou gera o conteúdo pedido: um arquivo HTML, uma imagem, dados de um banco.<br><span class="tl-tag" style="background:#fef2f2;color:#991b1b">back-end</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(5)">
+          <div class="tl-year">Passo 6</div>
+          <div class="tl-head">Uma resposta HTTP retorna</div>
+          <div class="tl-desc">O servidor devolve uma resposta com um código de status (ex.: 200 OK) e o conteúdo pedido.<br><span class="tl-tag" style="background:#ccfbf1;color:#0f766e">resposta</span></div>
+        </div>
+        <div class="tl-item" onclick="tlClick(6)">
+          <div class="tl-year">Passo 7</div>
+          <div class="tl-head">O navegador renderiza a página</div>
+          <div class="tl-desc">O navegador interpreta o conteúdo recebido e desenha a página na tela — geralmente disparando dezenas de novas requisições (imagens, estilos, scripts).<br><span class="tl-tag" style="background:#eff6ff;color:#1d4ed8">front-end</span></div>
+        </div>
+      </div>`
+  },
+  {
+    id:'problema', time:3,
+    render:()=>`
+      <div class="eyebrow">Conceito central · 3 minutos</div>
+      <div class="slide-title">Por que precisamos de um protocolo?</div>
+      <div class="slide-sub">Cliente e servidor são feitos por empresas diferentes, em linguagens diferentes. Sem regras em comum, nada funcionaria.</div>
+      <div class="compare">
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#fef2f2;color:#dc2626">Sem um protocolo comum</div>
+          <div class="comp-body">Cada navegador "falaria" de um jeito e cada servidor entenderia de outro.<br><br>
+            Resultado:<br>
+            • Nenhum site funcionaria em todo navegador<br>
+            • Cada empresa criaria seu próprio "idioma"<br>
+            • A internet como conhecemos não existiria</div>
+        </div>
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#f0fdf4;color:#15803d">Com o protocolo HTTP</div>
+          <div class="comp-body">Todo navegador e todo servidor seguem as mesmas regras.<br><br>
+            Resultado:<br>
+            • Qualquer navegador acessa qualquer servidor<br>
+            • Requisições e respostas têm formato previsível<br>
+            • A Web funciona de forma universal</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Analogia:</strong> HTTP é o idioma combinado entre o garçom e a cozinha. Não importa qual restaurante você visite — o "pedido" e a "entrega" seguem sempre a mesma lógica.</div>`
+  },
+  {
+    id:'estrutura', time:4,
+    render:()=>`
+      <div class="eyebrow">Código na prática · 4 minutos</div>
+      <div class="slide-title">Anatomia de uma requisição e de uma resposta</div>
+      <div class="slide-sub">É isso que o navegador envia e recebe, de forma simplificada, toda vez que você acessa uma página.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">HTTP · Requisição do cliente</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="c">&lt;!-- Método + recurso pedido + versão do protocolo --&gt;</span>
+<span class="k">GET</span> <span class="t">/index.html</span> <span class="k">HTTP/1.1</span>
+<span class="c">&lt;!-- Para qual servidor é o pedido --&gt;</span>
+<span class="a">Host:</span> <span class="s">www.exemplo.com</span>
+<span class="c">&lt;!-- O que o cliente espera receber de volta --&gt;</span>
+<span class="a">Accept:</span> <span class="s">text/html</span></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">HTTP · Resposta do servidor</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="c">&lt;!-- Versão + código de status + descrição --&gt;</span>
+<span class="k">HTTP/1.1</span> <span class="kv">200</span> <span class="t">OK</span>
+<span class="c">&lt;!-- Tipo do conteúdo devolvido --&gt;</span>
+<span class="a">Content-Type:</span> <span class="s">text/html; charset=UTF-8</span>
+
+<span class="t">&lt;html&gt;...&lt;/html&gt;</span>  <span class="c">&lt;!-- o "corpo" da resposta --&gt;</span></pre>
+      </div>
+      <div class="cards" style="grid-template-columns:repeat(3,1fr);margin-top:12px">
+        <div class="card"><div class="card-title">Método</div><div class="card-body">Diz a intenção do pedido: buscar, criar, atualizar ou remover algo.</div></div>
+        <div class="card"><div class="card-title">Headers</div><div class="card-body">Informações extras sobre a requisição ou resposta — quem pergunta, o que espera, o que está vindo.</div></div>
+        <div class="card"><div class="card-title">Status code</div><div class="card-body">Um número de 3 dígitos que resume, de forma padronizada, como o pedido foi atendido.</div></div>
+      </div>`
+  },
+  {
+    id:'metodos', time:5,
+    render:()=>`
+      <div class="eyebrow">Prática interativa · 5 minutos</div>
+      <div class="slide-title">Métodos HTTP — clique para explorar</div>
+      <div class="slide-sub">Cada método representa uma intenção diferente do cliente. Clique em cada um para ver a analogia e o uso típico.</div>
+      <div class="tag-grid">
+        <div class="tag-item" onclick="showTag(this,'GET','&ldquo;Quero ver o cardápio.&rdquo; Usado para BUSCAR/LER dados, sem alterar nada no servidor. É o método mais usado da Web.')">
+          <div class="tag-code">GET</div><div class="tag-name">Buscar dados</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'POST','&ldquo;Quero fazer um pedido novo.&rdquo; Usado para CRIAR um novo dado no servidor — como enviar um formulário de cadastro.')">
+          <div class="tag-code">POST</div><div class="tag-name">Criar dado</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'PUT','&ldquo;Quero trocar meu pedido inteiro.&rdquo; Usado para ATUALIZAR um dado por completo, substituindo tudo que já existia.')">
+          <div class="tag-code">PUT</div><div class="tag-name">Atualizar tudo</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'PATCH','&ldquo;Quero só trocar a bebida.&rdquo; Usado para ATUALIZAR apenas uma parte de um dado existente.')">
+          <div class="tag-code">PATCH</div><div class="tag-name">Atualizar parte</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'DELETE','&ldquo;Quero cancelar meu pedido.&rdquo; Usado para REMOVER um dado do servidor.')">
+          <div class="tag-code">DELETE</div><div class="tag-name">Remover dado</div>
+        </div>
+        <div class="tag-item" onclick="showTag(this,'HEAD','&ldquo;Só quero saber se o prato existe, sem recebê-lo.&rdquo; Pede os mesmos headers de um GET, mas sem o conteúdo — útil para checagens rápidas.')">
+          <div class="tag-code">HEAD</div><div class="tag-name">Checar sem baixar</div>
+        </div>
+      </div>
+      <div class="tag-preview" id="tag-prev">Clique em um método acima para ver a descrição aqui.</div>`
+  },
+  {
+    id:'status', time:3,
+    render:()=>`
+      <div class="eyebrow">Código na prática · 3 minutos</div>
+      <div class="slide-title">Códigos de status — como a "cozinha" avisa o resultado</div>
+      <div class="slide-sub">Sempre 3 dígitos. A primeira casa já diz o tipo de resultado.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">✅</div>
+          <div class="card-title">2xx — Sucesso</div>
+          <div class="card-body"><code>200 OK</code>, <code>201 Created</code>. "Seu prato está pronto e correto."</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">↪️</div>
+          <div class="card-title">3xx — Redirecionamento</div>
+          <div class="card-body"><code>301 Moved Permanently</code>. "Esse prato agora é servido em outra mesa."</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🙋</div>
+          <div class="card-title">4xx — Erro do cliente</div>
+          <div class="card-body"><code>400 Bad Request</code>, <code>404 Not Found</code>. "Você pediu algo que não existe no cardápio."</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔥</div>
+          <div class="card-title">5xx — Erro do servidor</div>
+          <div class="card-body"><code>500 Internal Server Error</code>. "A cozinha pegou fogo."</div>
+        </div>
+      </div>
+      <div class="hl"><strong>DevTools:</strong> no navegador, aperte <code>F12</code>, vá até a aba <code>Network</code> e recarregue a página — cada requisição real aparece com seu método e status code.</div>`
+  },
+  {
+    id:'quiz', time:3,
+    render:()=>`
+      <div class="eyebrow">Verificação de aprendizagem · 3 minutos</div>
+      <div class="slide-title">Quiz rápido — turma responde junto</div>
+      <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+      <div class="quiz-block">
+        <div class="quiz-q">1. Você preencheu um formulário de cadastro em um site. Qual método HTTP foi provavelmente usado para enviar seus dados?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>GET</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>POST</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>DELETE</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>HEAD</div>
+        </div>
+        <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! POST é usado para criar um novo dado no servidor — exatamente o que um cadastro faz.</div>
+      </div>
+      <div class="quiz-block">
+        <div class="quiz-q">2. Você digita um endereço errado e a página mostra "404". O que isso significa?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>O servidor caiu</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>O recurso pedido não existe nesse endereço</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>Sua internet está lenta</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>O navegador está desatualizado</div>
+        </div>
+        <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! 404 é um erro do CLIENTE (faixa 4xx): o servidor respondeu, mas não encontrou o que foi pedido.</div>
+      </div>`
+  },
+  {
+    id:'curiosidades', time:1,
+    render:()=>`
+      <div class="eyebrow">Bônus · 1 minuto</div>
+      <div class="slide-title">Você sabia?</div>
+      <div class="slide-sub">Fatos sobre a Web e o HTTP que valem compartilhar com a turma.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🔐</div>
+          <div class="card-title">HTTPS = HTTP + criptografia</div>
+          <div class="card-body">O "S" de HTTPS significa que a conversa entre cliente e servidor é criptografada — ninguém no meio do caminho consegue ler os dados.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Bilhões de requisições por dia</div>
+          <div class="card-body">Só o Google processa mais de 8 bilhões de buscas por dia — cada uma disparando várias requisições HTTP.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🍪</div>
+          <div class="card-title">HTTP não tem memória</div>
+          <div class="card-body">Cada requisição é independente — o protocolo "esquece" quem você é. É por isso que existem cookies e tokens de sessão.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧑‍💻</div>
+          <div class="card-title">REST nasceu em 2000</div>
+          <div class="card-body">Roy Fielding descreveu o estilo REST em sua tese de doutorado — hoje é o padrão mais usado para APIs na Web.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'fechamento', time:1,
+    render:()=>`
+      <div class="eyebrow">Encerramento · 1 minuto</div>
+      <div class="slide-title">Recapitulando e partindo para a prática</div>
+      <div class="slide-sub">O que aprendemos nesta exposição e o que fazemos agora.</div>
+      <div class="reflect-list">
+        <div class="reflect-item">
+          <div class="reflect-num">1</div>
+          <div class="reflect-text"><strong>A Web é cliente-servidor.</strong> O navegador pede, o servidor responde — com a ajuda do DNS para traduzir nomes em endereços.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">2</div>
+          <div class="reflect-text"><strong>HTTP é o idioma comum</strong> entre cliente e servidor: toda requisição tem um método, e toda resposta tem um código de status.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">3</div>
+          <div class="reflect-text"><strong>Métodos e status codes</strong> comunicam intenção e resultado — GET busca, POST cria, 200 é sucesso, 404 é erro do cliente.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">4</div>
+          <div class="reflect-text"><strong>Agora é hora de ver ao vivo.</strong> Vamos abrir o DevTools juntos e observar requisições reais acontecendo antes da prática individual.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Para casa (curiosidade opcional):</strong> Acesse qualquer site, aperte F12 e vá até a aba Network. Recarregue a página e conte quantas requisições foram feitas. Compartilhe o número na próxima aula.</div>`
+  }
+];
+
+let cur = 0;
+let timerInterval = null;
+let timerStarted = false;
+
+function buildDots() {
+  const bar = document.getElementById('dots-bar');
+  SLIDES.forEach((s, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i + 1);
+    d.onclick = () => goTo(i);
+    bar.appendChild(d);
+    if (i < SLIDES.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'dot-sep';
+      bar.appendChild(sep);
+    }
+  });
+}
+
+function buildSlides() {
+  const wrap = document.getElementById('slide-wrap');
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.id = 'sl-' + s.id;
+    div.innerHTML = s.render();
+    wrap.appendChild(div);
+  });
+}
+
+function goTo(i) {
+  const prev = cur;
+  document.getElementById('sl-' + SLIDES[prev].id).classList.remove('active');
+  const dots = document.querySelectorAll('.dot');
+  dots[prev].classList.remove('active');
+  if (i > prev) dots[prev].classList.add('done');
+
+  cur = i;
+  const el = document.getElementById('sl-' + SLIDES[cur].id);
+  el.innerHTML = SLIDES[cur].render();
+  el.classList.add('active');
+  dots[cur].classList.add('active');
+  dots[cur].classList.remove('done');
+
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = cur === SLIDES.length - 1;
+  btnNext.textContent = cur === SLIDES.length - 1 ? 'Finalizar' : 'Próximo →';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + SLIDES.length;
+
+  if (!timerStarted) { timerStarted = true; startTimer(); }
+}
+
+function nav(d) {
+  const ni = cur + d;
+  if (ni >= 0 && ni < SLIDES.length) goTo(ni);
+}
+
+function startTimer() {
+  let rem = 30 * 60;
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(timerInterval); el.textContent = '00:00'; el.className = 'timer danger'; return; }
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if (rem <= 300) el.className = 'timer warn';
+    if (rem <= 60)  el.className = 'timer danger';
+  }, 1000);
+}
+
+function tlClick(i) {
+  document.querySelectorAll('.tl-item').forEach((el, j) => el.classList.toggle('tl-open', j === i));
+}
+
+function showTag(el, tag, desc) {
+  document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('tag-on'));
+  el.classList.add('tag-on');
+  document.getElementById('tag-prev').innerHTML =
+    '<strong>' + tag + '</strong><br>' + desc;
+}
+
+function answer(el, type, fbId) {
+  const block = el.closest('.quiz-block');
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o === el) o.classList.add(type === 'c' ? 'correct' : 'wrong');
+    else o.classList.add('dimmed');
+  });
+  const fb = document.getElementById(fbId);
+  if (type !== 'c') {
+    fb.style.background = '#fef2f2';
+    fb.style.color = '#dc2626';
+    fb.textContent = 'Não exatamente — pense em qual método/código representa melhor essa situação.';
+  }
+  fb.style.display = 'block';
+}
+
+buildDots();
+buildSlides();
+document.getElementById('btn-prev').disabled = true;
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 01 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a01_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>
