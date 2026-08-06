@@ -1,7 +1,9 @@
 # Aula 01 — Arquitetura Web e Protocolo HTTP
 
 **Módulo:** Fundamentos de Arquitetura Web, Protocolo HTTP, Conceitos de API REST, HTML, CSS e JavaScript
+
 **Carga horária da aula:** 4 horas
+
 **Professor(a):** @karizeviecelli
 
 ---
