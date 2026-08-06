@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — JavaScript: Lógica e Fundamentos · Aula 09</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+
+/* PROGRESS DOTS */
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+
+/* SLIDE AREA */
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body em{font-style:italic}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1.5px;background:#e2e8f0}
+.tl-item{position:relative;margin-bottom:14px;cursor:pointer}
+.tl-item::before{content:'';position:absolute;left:-22px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid #e2e8f0;background:#fff;transition:all .2s}
+.tl-item:hover::before{background:#3b82f6;border-color:#3b82f6}
+.tl-item.tl-open::before{background:#1d4ed8;border-color:#1d4ed8;transform:scale(1.25)}
+.tl-year{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px}
+.tl-head{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:3px}
+.tl-desc{font-size:12px;color:#64748b;line-height:1.55;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.tl-item.tl-open .tl-desc{max-height:160px}
+.tl-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-top:5px}
+
+/* CODE */
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.kv{color:#6ee7b7}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}.fn{color:#c4b5fd}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.comp-side{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.comp-hdr{padding:8px 14px;font-size:12px;font-weight:600}
+.comp-body{padding:10px 14px;font-size:12px;color:#64748b;line-height:1.65}
+.comp-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* TAG EXPLORER */
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+
+/* QUIZ */
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+
+/* REFLECT */
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+
+/* HIGHLIGHT BOX */
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+
+/* NAV BAR */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 09</span>
+      <div>
+        <div class="hdr-title">JavaScript: Lógica e Fundamentos — Exposição Dialogada</div>
+        <div class="hdr-sub">30 minutos · Projetor · Turma</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+  <button onclick="window.location.href='a09_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;transition:background .15s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+
+  <div class="dots" id="dots-bar"></div>
+
+  <div class="slide-wrap" id="slide-wrap"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 9</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  {
+    id:'intro', time:3,
+    render:()=>`
+      <div class="eyebrow">Abertura · 3 minutos</div>
+      <div class="slide-title">Dando um cérebro à casa inteligente</div>
+      <div class="slide-sub">HTML deu a estrutura, CSS deu a aparência. Mas até aqui, a casa era estática — não pensava, não reagia, não decidia nada.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">🗃️</div>
+          <div class="card-title">let / const</div>
+          <div class="card-body">Gavetas etiquetadas onde a casa guarda dados.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">🌡️</div>
+          <div class="card-title">if / else</div>
+          <div class="card-body">O termostato que decide: "se passar de 25°C, ligue o ar".</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">for / while</div>
+          <div class="card-body">A rotina automática: "regue cada uma das 10 plantas".</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎬</div>
+          <div class="card-title">Funções</div>
+          <div class="card-body">O "modo cinema" do controle remoto — vários passos, um clique.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Pergunta para a turma:</strong> Já usaram um site que "reage" ao que vocês fazem — mostra um aviso, calcula um total, valida um formulário? É JavaScript por trás disso.</div>`
+  },
+  {
+    id:'variaveis', time:6,
+    render:()=>`
+      <div class="eyebrow">Fundação · 6 minutos</div>
+      <div class="slide-title">Variáveis: let e const</div>
+      <div class="slide-sub">Use const por padrão. Só troque para let quando o valor realmente precisar mudar.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">JavaScript · variáveis</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">let</span> <span class="t">temperatura</span> <span class="t">=</span> <span class="s">22</span><span class="t">;</span>
+<span class="t">temperatura</span> <span class="t">=</span> <span class="s">25</span><span class="t">;</span> <span class="c">// permitido — let pode ser reatribuída</span>
+
+<span class="k">const</span> <span class="t">nomeDaCasa</span> <span class="t">=</span> <span class="s">"Casa Inteligente"</span><span class="t">;</span>
+<span class="c">// nomeDaCasa = "Outro nome"; // ERRO! const não pode mudar</span></pre>
+      </div>
+      <div class="hl"><strong>Boa prática:</strong> comece sempre com const. Se o código pedir um erro de reatribuição, aí sim troque para let.</div>`
+  },
+  {
+    id:'tipos', time:5,
+    render:()=>`
+      <div class="eyebrow">Vocabulário básico · 5 minutos</div>
+      <div class="slide-title">Tipos de dados</div>
+      <div class="slide-sub">As "gavetas" podem guardar tipos diferentes de conteúdo.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">JavaScript · tipos</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">let</span> <span class="t">idade</span> <span class="t">=</span> <span class="s">25</span><span class="t">;</span>              <span class="c">// Number</span>
+<span class="k">let</span> <span class="t">nome</span> <span class="t">=</span> <span class="s">"Maria"</span><span class="t">;</span>          <span class="c">// String</span>
+<span class="k">let</span> <span class="t">ligado</span> <span class="t">=</span> <span class="s">true</span><span class="t">;</span>           <span class="c">// Boolean</span>
+<span class="k">let</span> <span class="t">comodos</span> <span class="t">=</span> <span class="t">[</span><span class="s">"sala"</span><span class="t">,</span> <span class="s">"cozinha"</span><span class="t">];</span> <span class="c">// Array</span>
+<span class="k">let</span> <span class="t">casa</span> <span class="t">=</span> <span class="t">{</span> <span class="a">quartos</span>: <span class="s">3</span> <span class="t">};</span>       <span class="c">// Object</span></pre>
+      </div>`
+  },
+  {
+    id:'operadores', time:6,
+    render:()=>`
+      <div class="eyebrow">Ferramentas de comparação · 6 minutos</div>
+      <div class="slide-title">Operadores: aritméticos, comparação e lógicos</div>
+      <div class="slide-sub">=== compara valor E tipo — sempre prefira a versão estrita.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">JavaScript · operadores</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">let</span> <span class="t">resto</span> <span class="t">=</span> <span class="s">10</span> <span class="t">%</span> <span class="s">3</span><span class="t">;</span>          <span class="c">// 1 — resto da divisão</span>
+<span class="k">let</span> <span class="t">igual</span> <span class="t">=</span> <span class="t">(</span><span class="s">5</span> <span class="t">===</span> <span class="s">5</span><span class="t">);</span>    <span class="c">// true — compara valor e tipo</span>
+<span class="k">let</span> <span class="t">podeEntrar</span> <span class="t">=</span> <span class="t">(</span><span class="t">idade</span> <span class="t">&gt;=</span> <span class="s">18</span><span class="t">)</span> <span class="t">&amp;&amp;</span> <span class="t">temIngresso</span><span class="t">;</span> <span class="c">// AND</span></pre>
+      </div>
+      <div class="hl"><strong>Pegadinha clássica:</strong> <code>"5" == 5</code> retorna true, mas <code>"5" === 5</code> retorna false. Use sempre ===.</div>`
+  },
+  {
+    id:'condicionais', time:6,
+    render:()=>`
+      <div class="eyebrow">Tomando decisões · 6 minutos</div>
+      <div class="slide-title">if / else if / else — o termostato</div>
+      <div class="slide-sub">Testa uma condição; se for true, executa o bloco correspondente.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">JavaScript · condicionais</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">let</span> <span class="t">temperatura</span> <span class="t">=</span> <span class="s">28</span><span class="t">;</span>
+
+<span class="k">if</span> <span class="t">(</span><span class="t">temperatura</span> <span class="t">&gt;</span> <span class="s">25</span><span class="t">)</span> <span class="t">{</span>
+  <span class="fn">console</span><span class="t">.</span><span class="fn">log</span><span class="t">(</span><span class="s">"Ligar o ar-condicionado"</span><span class="t">);</span>
+<span class="t">}</span> <span class="k">else if</span> <span class="t">(</span><span class="t">temperatura</span> <span class="t">&lt;</span> <span class="s">18</span><span class="t">)</span> <span class="t">{</span>
+  <span class="fn">console</span><span class="t">.</span><span class="fn">log</span><span class="t">(</span><span class="s">"Ligar o aquecedor"</span><span class="t">);</span>
+<span class="t">}</span> <span class="k">else</span> <span class="t">{</span>
+  <span class="fn">console</span><span class="t">.</span><span class="fn">log</span><span class="t">(</span><span class="s">"Temperatura agradável"</span><span class="t">);</span>
+<span class="t">}</span></pre>
+      </div>`
+  },
+  {
+    id:'lacos', time:5,
+    render:()=>`
+      <div class="eyebrow">Repetindo tarefas · 5 minutos</div>
+      <div class="slide-title">for e while — a rotina automática</div>
+      <div class="slide-sub">for: quando você sabe quantas vezes repetir. while: quando depende de uma condição.</div>
+      <div class="compare">
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#eff6ff;color:#1d4ed8">for — número definido</div>
+          <div class="comp-body">
+            <code>for (let i = 0; i &lt; 5; i++)</code><br><br>
+            Início, condição de parada e incremento, tudo junto.
+          </div>
+        </div>
+        <div class="comp-side">
+          <div class="comp-hdr" style="background:#fdf4ff;color:#a21caf">while — condição variável</div>
+          <div class="comp-body">
+            <code>while (bateria &gt; 0)</code><br><br>
+            Repete enquanto a condição for verdadeira.
+          </div>
+        </div>
+      </div>
+      <div class="hl"><strong>Cuidado:</strong> se a condição do while nunca virar falsa, o navegador trava em um loop infinito — sempre garanta que algo caminha em direção ao fim.</div>`
+  },
+  {
+    id:'funcoes', time:5,
+    render:()=>`
+      <div class="eyebrow">Empacotando comportamento · 5 minutos</div>
+      <div class="slide-title">Funções — o "modo cinema" do controle remoto</div>
+      <div class="slide-sub">Empacota um comportamento reutilizável, sem repetir código.</div>
+      <div class="code-wrap">
+        <div class="code-hdr">
+          <span class="code-lang">JavaScript · funções</span>
+          <div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div>
+        </div>
+        <pre><span class="k">function</span> <span class="fn">calcularMedia</span><span class="t">(</span><span class="t">nota1</span><span class="t">,</span> <span class="t">nota2</span><span class="t">)</span> <span class="t">{</span>
+  <span class="k">const</span> <span class="t">media</span> <span class="t">=</span> <span class="t">(</span><span class="t">nota1</span> <span class="t">+</span> <span class="t">nota2</span><span class="t">)</span> <span class="t">/</span> <span class="s">2</span><span class="t">;</span>
+  <span class="k">return</span> <span class="t">media</span><span class="t">;</span> <span class="c">// devolve o valor para quem chamou</span>
+<span class="t">}</span>
+
+<span class="k">const</span> <span class="t">resultado</span> <span class="t">=</span> <span class="fn">calcularMedia</span><span class="t">(</span><span class="s">8</span><span class="t">,</span> <span class="s">6</span><span class="t">);</span> <span class="c">// resultado = 7</span></pre>
+      </div>`
+  },
+  {
+    id:'quiz', time:3,
+    render:()=>`
+      <div class="eyebrow">Verificação de aprendizagem · 3 minutos</div>
+      <div class="slide-title">Quiz rápido — turma responde junto</div>
+      <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+      <div class="quiz-block">
+        <div class="quiz-q">1. Você não sabe de antemão quantas vezes vai repetir algo — só sabe a condição de parada. Qual estrutura usar?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>for</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>while</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>if</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>const</div>
+        </div>
+        <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! while é ideal quando o número de repetições depende de uma condição, não de um contador fixo.</div>
+      </div>
+      <div class="quiz-block">
+        <div class="quiz-q">2. Uma função foi declarada sem nenhum "return". O que ela retorna quando chamada?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>Erro obrigatório</div>
+          <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>undefined</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>0</div>
+          <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>Uma string vazia</div>
+        </div>
+        <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! Sem return explícito, a função executa suas instruções mas retorna undefined.</div>
+      </div>`
+  },
+  {
+    id:'curiosidades', time:1,
+    render:()=>`
+      <div class="eyebrow">Bônus · 1 minuto</div>
+      <div class="slide-title">Você sabia?</div>
+      <div class="slide-sub">Fatos sobre JavaScript que valem compartilhar com a turma.</div>
+      <div class="cards">
+        <div class="card accent">
+          <div class="card-icon">⏱️</div>
+          <div class="card-title">Criado em 10 dias</div>
+          <div class="card-body">A primeira versão do JavaScript foi criada por Brendan Eich em cerca de 10 dias, em 1995.</div>
+        </div>
+        <div class="card accent">
+          <div class="card-icon">🌍</div>
+          <div class="card-title">A linguagem mais usada da web</div>
+          <div class="card-body">JavaScript roda em praticamente todo navegador do mundo — é a única linguagem nativa do front-end web.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔤</div>
+          <div class="card-title">Nada a ver com Java</div>
+          <div class="card-body">Apesar do nome parecido, JavaScript e Java são linguagens completamente diferentes — o nome foi decisão de marketing.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🖥️</div>
+          <div class="card-title">Também roda fora do navegador</div>
+          <div class="card-body">Com o Node.js, JavaScript também roda no servidor — a mesma linguagem do front ao back.</div>
+        </div>
+      </div>`
+  },
+  {
+    id:'fechamento', time:1,
+    render:()=>`
+      <div class="eyebrow">Encerramento · 1 minuto</div>
+      <div class="slide-title">Recapitulando e partindo para a prática</div>
+      <div class="slide-sub">O que aprendemos nesta exposição e o que fazemos agora.</div>
+      <div class="reflect-list">
+        <div class="reflect-item">
+          <div class="reflect-num">1</div>
+          <div class="reflect-text"><strong>let e const</strong> guardam dados; prefira const por padrão.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">2</div>
+          <div class="reflect-text"><strong>if/else</strong> toma decisões; <strong>for/while</strong> repete tarefas.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">3</div>
+          <div class="reflect-text"><strong>Funções</strong> empacotam comportamento reutilizável, com parâmetros e return.</div>
+        </div>
+        <div class="reflect-item">
+          <div class="reflect-num">4</div>
+          <div class="reflect-text"><strong>Agora é hora de construir.</strong> Vamos escrever juntos, ao vivo, alguns exercícios de lógica no Console antes da prática individual.</div>
+        </div>
+      </div>
+      <div class="hl"><strong>Próxima aula:</strong> vamos usar essa lógica para manipular o DOM — fazer o JavaScript realmente alterar a página em resposta a cliques e eventos.</div>`
+  }
+];
+
+let cur = 0;
+let timerInterval = null;
+let timerStarted = false;
+
+function buildDots() {
+  const bar = document.getElementById('dots-bar');
+  SLIDES.forEach((s, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.title = 'Slide ' + (i + 1);
+    d.onclick = () => goTo(i);
+    bar.appendChild(d);
+    if (i < SLIDES.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'dot-sep';
+      bar.appendChild(sep);
+    }
+  });
+}
+
+function buildSlides() {
+  const wrap = document.getElementById('slide-wrap');
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.id = 'sl-' + s.id;
+    div.innerHTML = s.render();
+    wrap.appendChild(div);
+  });
+}
+
+function goTo(i) {
+  const prev = cur;
+  document.getElementById('sl-' + SLIDES[prev].id).classList.remove('active');
+  const dots = document.querySelectorAll('.dot');
+  dots[prev].classList.remove('active');
+  if (i > prev) dots[prev].classList.add('done');
+
+  cur = i;
+  const el = document.getElementById('sl-' + SLIDES[cur].id);
+  el.innerHTML = SLIDES[cur].render();
+  el.classList.add('active');
+  dots[cur].classList.add('active');
+  dots[cur].classList.remove('done');
+
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const btnNext = document.getElementById('btn-next');
+  btnNext.disabled = cur === SLIDES.length - 1;
+  btnNext.textContent = cur === SLIDES.length - 1 ? 'Finalizar' : 'Próximo →';
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + SLIDES.length;
+
+  if (!timerStarted) { timerStarted = true; startTimer(); }
+}
+
+function nav(d) {
+  const ni = cur + d;
+  if (ni >= 0 && ni < SLIDES.length) goTo(ni);
+}
+
+function startTimer() {
+  let rem = 30 * 60;
+  const el = document.getElementById('timer');
+  timerInterval = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(timerInterval); el.textContent = '00:00'; el.className = 'timer danger'; return; }
+    const m = Math.floor(rem / 60), s = rem % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if (rem <= 300) el.className = 'timer warn';
+    if (rem <= 60)  el.className = 'timer danger';
+  }, 1000);
+}
+
+function tlClick(i) {
+  document.querySelectorAll('.tl-item').forEach((el, j) => el.classList.toggle('tl-open', j === i));
+}
+
+function showTag(el, tag, desc) {
+  document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('tag-on'));
+  el.classList.add('tag-on');
+  document.getElementById('tag-prev').innerHTML =
+    '<strong>' + tag + '</strong><br>' + desc;
+}
+
+function answer(el, type, fbId) {
+  const block = el.closest('.quiz-block');
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    if (o === el) o.classList.add(type === 'c' ? 'correct' : 'wrong');
+    else o.classList.add('dimmed');
+  });
+  const fb = document.getElementById(fbId);
+  if (type !== 'c') {
+    fb.style.background = '#fef2f2';
+    fb.style.color = '#dc2626';
+    fb.textContent = 'Não exatamente — pense no que cada estrutura resolve melhor.';
+  }
+  fb.style.display = 'block';
+}
+
+buildDots();
+buildSlides();
+document.getElementById('btn-prev').disabled = true;
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 09 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a09_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>

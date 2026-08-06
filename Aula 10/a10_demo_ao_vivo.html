@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Demonstração ao vivo — Aula 10 DOM e Eventos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}
+
+.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:1100px;margin:0 auto}
+
+.panel{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.panel-title{font-size:12px;font-weight:500;color:#64748b}
+.dots-row{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+
+.editor-body{background:#1E293B;min-height:340px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.75;color:#94A3B8;overflow:hidden;position:relative}
+#code-output{white-space:pre-wrap;word-break:break-all}
+.cursor{display:inline-block;width:2px;height:14px;background:#60A5FA;vertical-align:middle;animation:blink .9s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.preview-body{background:#ffffff;min-height:340px;padding:16px;overflow-y:auto}
+
+.step-bar{padding:12px 16px;border-top:1px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;gap:10px;grid-column:1/-1}
+.step-label{font-size:12px;color:#64748b;flex:1;line-height:1.4}
+.step-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;background:#eff6ff;color:#1d4ed8}
+.ctrl-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#1e293b;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.ctrl-btn:hover{background:#f1f5f9}
+.ctrl-btn.go{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.ctrl-btn.go:hover{background:#1e40af}
+.ctrl-btn:disabled{opacity:.35;pointer-events:none}
+
+.narr-box{grid-column:1/-1;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;background:#f8fafc;font-size:13px;color:#475569;line-height:1.6;min-height:52px}
+.narr-box strong{color:#1e293b;font-weight:600}
+
+.prog-track{height:3px;background:#e2e8f0;border-radius:2px;grid-column:1/-1;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s ease;width:0%}
+
+.page-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.page-title h1{font-size:16px;font-weight:600;color:#1e293b}
+.page-title p{font-size:12px;color:#94a3b8}
+
+.k{color:#93C5FD}
+.kv{color:#6EE7B7}
+.a{color:#FDE68A}
+.s{color:#FDA4AF}
+.t{color:#E2E8F0}
+.c{color:#475569;font-style:italic}
+.fn{color:#c4b5fd}
+
+@media(max-width:700px){
+  .demo-wrap{grid-template-columns:1fr}
+  .panel:last-of-type{display:none}
+}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <div class="page-title">
+    <h1>Demonstração ao vivo — Aula 10</h1>
+    <p>Docente digita · Alunos acompanham &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p>
+
+    <button onclick="window.location.href='a10_pratica_guiada.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📝 Prática →</button></div>
+
+  <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">VS Code — cadastro.js</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="editor-body"><span id="code-output"></span><span class="cursor" id="cur"></span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">Navegador — resultado ao vivo</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="preview-body" id="preview"></div>
+  </div>
+
+  <div class="narr-box" id="narr">Pronto para começar. Clique em <strong>Iniciar digitação</strong> para ver o docente construindo um formulário com validação, do zero.</div>
+
+  <div class="step-bar">
+    <span class="step-badge" id="step-badge">Etapa 1 / 8</span>
+    <span class="step-label" id="step-desc">Formulário sem nenhum JavaScript</span>
+    <button class="ctrl-btn" id="btn-prev" onclick="prevStep()" disabled>&#8592; Anterior</button>
+    <button class="ctrl-btn go" id="btn-play" onclick="playStep()">Iniciar digitação</button>
+    <button class="ctrl-btn" id="btn-next" onclick="nextStep()" disabled>Próxima &#8594;</button>
+  </div>
+</div>
+
+<script>
+const formHtml = `<div style="font-family:system-ui,sans-serif;font-size:12px">
+  <div style="margin-bottom:8px"><input placeholder="Nome" style="width:100%;padding:6px;border:1px solid #cbd5e1;border-radius:4px"></div>
+  <div style="margin-bottom:8px"><input placeholder="E-mail" style="width:100%;padding:6px;border:1px solid #cbd5e1;border-radius:4px"></div>
+  <div style="margin-bottom:8px"><input placeholder="Senha" type="password" style="width:100%;padding:6px;border:1px solid #cbd5e1;border-radius:4px"></div>
+  <button style="background:#1d4ed8;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer">Cadastrar</button>
+</div>`;
+
+const STEPS = [
+  {
+    label: "Formulário sem nenhum JavaScript",
+    narr: "<strong>Docente:</strong> \"Aqui está o HTML puro: 3 campos e um botão. Se eu clicar em Cadastrar agora, a página tentaria recarregar — sem nenhuma validação.\"",
+    code: `<span class="c">// cadastro.js — ainda vazio</span>\n<span class="c">// HTML: form com #nome, #email, #senha e botão submit</span>`,
+    preview: formHtml
+  },
+  {
+    label: "Selecionando os elementos",
+    narr: "<strong>Docente:</strong> \"Primeiro, seleciono o formulário e os 3 campos usando querySelector.\"",
+    code: `<span class="k">const</span> <span class="t">formulario</span> <span class="t">=</span> <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#form-cadastro"</span><span class="t">);</span>\n<span class="k">const</span> <span class="t">campoNome</span> <span class="t">=</span> <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#nome"</span><span class="t">);</span>\n<span class="k">const</span> <span class="t">campoEmail</span> <span class="t">=</span> <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#email"</span><span class="t">);</span>\n<span class="k">const</span> <span class="t">campoSenha</span> <span class="t">=</span> <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#senha"</span><span class="t">);</span>`,
+    preview: formHtml
+  },
+  {
+    label: "Capturando o submit e usando preventDefault",
+    narr: "<strong>Docente:</strong> \"Adiciono um addEventListener no submit e chamo preventDefault() logo na primeira linha — assim a página não recarrega mais.\"",
+    code: `<span class="t">formulario</span><span class="t">.</span><span class="fn">addEventListener</span><span class="t">(</span><span class="s">"submit"</span><span class="t">,</span> <span class="k">function</span> <span class="t">(</span><span class="t">event</span><span class="t">)</span> <span class="t">{</span>\n  <span class="t">event</span><span class="t">.</span><span class="fn">preventDefault</span><span class="t">();</span>\n  <span class="fn">console</span><span class="t">.</span><span class="fn">log</span><span class="t">(</span><span class="s">"Submit capturado!"</span><span class="t">);</span>\n<span class="t">});</span>`,
+    preview: formHtml + `<div style="margin-top:8px;font-size:11px;color:#166534">✓ clique em Cadastrar não recarrega mais a página</div>`
+  },
+  {
+    label: "Validando o campo nome",
+    narr: "<strong>Docente:</strong> \"Dentro do listener, testo se o nome está vazio. Se estiver, mostro uma mensagem de erro com innerHTML e adiciono uma classe de borda vermelha.\"",
+    code: `<span class="k">if</span> <span class="t">(</span><span class="t">campoNome</span><span class="t">.</span><span class="a">value</span><span class="t">.</span><span class="fn">trim</span><span class="t">()</span> <span class="t">===</span> <span class="s">""</span><span class="t">)</span> <span class="t">{</span>\n  <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#erro-nome"</span><span class="t">).</span><span class="a">innerHTML</span> <span class="t">=</span> <span class="s">"Nome é obrigatório."</span><span class="t">;</span>\n  <span class="t">campoNome</span><span class="t">.</span><span class="fn">classList</span><span class="t">.</span><span class="fn">add</span><span class="t">(</span><span class="s">"campo-invalido"</span><span class="t">);</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:system-ui,sans-serif;font-size:12px"><div style="margin-bottom:2px"><input placeholder="Nome" style="width:100%;padding:6px;border:2px solid #dc2626;border-radius:4px"></div><div style="color:#dc2626;font-size:11px;margin-bottom:8px">Nome é obrigatório.</div></div>`
+  },
+  {
+    label: "Validando o e-mail",
+    narr: "<strong>Docente:</strong> \"Mesmo padrão para o e-mail: verifico se contém um @. Se não tiver, mostro o erro.\"",
+    code: `<span class="k">if</span> <span class="t">(</span><span class="t">!</span><span class="t">campoEmail</span><span class="t">.</span><span class="a">value</span><span class="t">.</span><span class="fn">includes</span><span class="t">(</span><span class="s">"@"</span><span class="t">))</span> <span class="t">{</span>\n  <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#erro-email"</span><span class="t">).</span><span class="a">innerHTML</span> <span class="t">=</span> <span class="s">"E-mail inválido."</span><span class="t">;</span>\n  <span class="t">campoEmail</span><span class="t">.</span><span class="fn">classList</span><span class="t">.</span><span class="fn">add</span><span class="t">(</span><span class="s">"campo-invalido"</span><span class="t">);</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:system-ui,sans-serif;font-size:12px"><div style="margin-bottom:2px"><input placeholder="E-mail" value="teste-sem-arroba" style="width:100%;padding:6px;border:2px solid #dc2626;border-radius:4px"></div><div style="color:#dc2626;font-size:11px;margin-bottom:8px">E-mail inválido.</div></div>`
+  },
+  {
+    label: "Validando a senha (comprimento mínimo)",
+    narr: "<strong>Docente:</strong> \"Para a senha, uso .length para checar se tem pelo menos 6 caracteres.\"",
+    code: `<span class="k">if</span> <span class="t">(</span><span class="t">campoSenha</span><span class="t">.</span><span class="a">value</span><span class="t">.</span><span class="a">length</span> <span class="t">&lt;</span> <span class="s">6</span><span class="t">)</span> <span class="t">{</span>\n  <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#erro-senha"</span><span class="t">).</span><span class="a">innerHTML</span> <span class="t">=</span> <span class="s">"Senha deve ter 6+ caracteres."</span><span class="t">;</span>\n  <span class="t">campoSenha</span><span class="t">.</span><span class="fn">classList</span><span class="t">.</span><span class="fn">add</span><span class="t">(</span><span class="s">"campo-invalido"</span><span class="t">);</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:system-ui,sans-serif;font-size:12px"><div style="margin-bottom:2px"><input placeholder="Senha" type="password" value="123" style="width:100%;padding:6px;border:2px solid #dc2626;border-radius:4px"></div><div style="color:#dc2626;font-size:11px;margin-bottom:8px">Senha deve ter 6+ caracteres.</div></div>`
+  },
+  {
+    label: "Preenchendo tudo corretamente",
+    narr: "<strong>Docente:</strong> \"Agora preencho os 3 campos corretamente. Nenhum if é verdadeiro, então nenhum erro aparece — e mostro a mensagem de sucesso.\"",
+    code: `<span class="k">if</span> <span class="t">(</span><span class="t">valido</span><span class="t">)</span> <span class="t">{</span>\n  <span class="fn">document</span><span class="t">.</span><span class="fn">querySelector</span><span class="t">(</span><span class="s">"#sucesso"</span><span class="t">).</span><span class="fn">classList</span><span class="t">.</span><span class="fn">remove</span><span class="t">(</span><span class="s">"oculto"</span><span class="t">);</span>\n<span class="t">}</span>`,
+    preview: `<div style="font-family:system-ui,sans-serif;font-size:12px"><div style="margin-bottom:8px"><input value="Maria Silva" style="width:100%;padding:6px;border:1px solid #86efac;border-radius:4px"></div><div style="margin-bottom:8px"><input value="maria@email.com" style="width:100%;padding:6px;border:1px solid #86efac;border-radius:4px"></div><div style="margin-bottom:8px"><input type="password" value="senha123" style="width:100%;padding:6px;border:1px solid #86efac;border-radius:4px"></div><div style="background:#f0fdf4;color:#15803d;padding:8px;border-radius:6px;text-align:center">✓ Cadastro realizado!</div></div>`
+  },
+  {
+    label: "Resultado final: formulário validado completo",
+    narr: "<strong>Docente:</strong> \"Esse é o padrão completo: selecionar, capturar submit, validar cada campo, mostrar erros ou sucesso. Agora é a vez de vocês.\"",
+    code: `<span class="c">/* padrão completo de validação */</span>\n<span class="t">formulario</span><span class="t">.</span><span class="fn">addEventListener</span><span class="t">(</span><span class="s">"submit"</span><span class="t">,</span> <span class="k">function</span><span class="t">(</span><span class="t">event</span><span class="t">)</span> <span class="t">{</span>\n  <span class="t">event</span><span class="t">.</span><span class="fn">preventDefault</span><span class="t">();</span>\n  <span class="c">// ...validações de nome, email, senha...</span>\n  <span class="c">// ...sucesso ou erros...</span>\n<span class="t">});</span>`,
+    preview: `<div style="text-align:center;padding:20px;color:#166534;font-family:system-ui,sans-serif;font-size:13px">✓ Formulário completo, validado e funcionando</div>`
+  }
+];
+
+let cur=0, typing=false, typeTimer=null;
+
+function render(){
+  const s=STEPS[cur];
+  document.getElementById('step-badge').textContent=`Etapa ${cur+1} / ${STEPS.length}`;
+  document.getElementById('step-desc').textContent=s.label;
+  document.getElementById('prog').style.width=`${Math.round(((cur+1)/STEPS.length)*100)}%`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+  document.getElementById('narr').innerHTML=s.narr;
+  document.getElementById('preview').innerHTML=s.preview||'';
+}
+
+function showCode(s){
+  document.getElementById('code-output').innerHTML=s.code;
+}
+
+function playStep(){
+  if(typing)return;
+  typing=true;
+  const s=STEPS[cur];
+  const out=document.getElementById('code-output');
+  out.innerHTML='';
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-prev').disabled=true;
+  document.getElementById('btn-next').disabled=true;
+
+  const full=s.code;
+  const stripped=full.replace(/<[^>]+>/g,'');
+  const htmlParts=[];
+  let i=0,pos=0;
+  while(i<full.length){
+    if(full[i]==='<'){
+      const end=full.indexOf('>',i);
+      if(end!==-1){htmlParts.push({type:'tag',val:full.slice(i,end+1),pos});i=end+1;continue;}
+    }
+    htmlParts.push({type:'char',val:full[i],pos,ch:stripped[pos]||''});
+    pos++;i++;
+  }
+
+  let pi=0;
+  function tick(){
+    if(pi>=htmlParts.length){
+      typing=false;
+      document.getElementById('btn-play').textContent='Rever';
+      document.getElementById('btn-play').disabled=false;
+      document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+      document.getElementById('btn-prev').disabled=false;
+      return;
+    }
+    const p=htmlParts[pi];
+    if(p.type==='tag'){out.innerHTML+=p.val;pi++;tick();return;}
+    out.innerHTML+=p.val;
+    pi++;
+    const delay=p.ch==='\n'?60:p.ch===' '?20:Math.random()*25+18;
+    typeTimer=setTimeout(tick,delay);
+  }
+  tick();
+}
+
+function nextStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.min(cur+1,STEPS.length-1);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+function prevStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.max(cur-1,0);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+render();
+document.getElementById('code-output').innerHTML='';
+document.getElementById('btn-play').textContent='Iniciar digitação';
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a10_exposicao.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0;white-space:nowrap" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">&#8592; Exposição</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 10 &middot; 2 de 5 &middot; Demo ao Vivo<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a10_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Prática Guiada &#8594;</a>
+</div>
+</body>
+</html>
