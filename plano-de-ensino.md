@@ -15,10 +15,15 @@
 ## Ementa
 
 _Fundamentos de arquitetura da Web (cliente-servidor, DNS, hospedagem) e do protocolo HTTP (métodos, status codes, headers, ciclo requisição-resposta). 
+
 _Construção de páginas web com HTML: estrutura, elementos semânticos, formulários, tabelas e multimídia. 
+
 _Linguagem CSS: seletores, propriedades, box model, flexbox, grid, responsividade. 
+
 _Linguagem JavaScript: lógica de programação, manipulação do DOM, eventos e, na etapa de aprofundamento, 
+
 _Conceitos de API REST (recursos, verbos, JSON) e consumo de dados reais via `fetch`. 
+
 _Projeto final: painel/aplicação web funcional, integrando HTML, CSS, JavaScript e consumo de uma API REST.
 
 ---
