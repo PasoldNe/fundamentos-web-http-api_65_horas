@@ -167,25 +167,25 @@ Organizado aula a aula, na mesma ordem do Cronograma abaixo.
 
 ## Cronograma das Aulas
 
-| Aula | Data | Tema | Conteúdo | Atividade |
-|---|---|---|---|---|
-| 1 | [a definir] | Arquitetura Web e HTTP | Cliente-servidor, DNS, métodos HTTP, status codes | Mapear o ciclo de uma requisição real com DevTools |
-| 2 | [a definir] | HTML — Estrutura básica | Tags essenciais, links, imagens, listas | Construir uma página HTML simples |
-| 3 | [a definir] | HTML Semântico | Elementos estruturais, tabelas, formulários | Estruturar uma landing page semântica *(checkpoint 1)* |
-| 4 | [a definir] | CSS — Fundamentos | Seletores, cores, tipografia | Estilizar a landing page da aula 3 |
-| 5 | [a definir] | Box Model | Padding, margin, border, display | Criar cards com espaçamento correto |
-| 6 | [a definir] | Flexbox | display:flex, justify-content, align-items | Barra de navegação e grade de cards *(checkpoint 2)* |
-| 7 | [a definir] | CSS Grid | grid-template, grid-area, gap | Layout de dashboard com áreas nomeadas |
-| 8 | [a definir] | Responsividade | Media queries, unidades relativas, mobile first | Tornar o dashboard responsivo |
-| 9 | [a definir] | JavaScript — Lógica | Variáveis, operadores, condicionais, laços | Exercícios de lógica de programação |
-| 10 | [a definir] | JavaScript — DOM e Eventos | querySelector, addEventListener, formulários | Interface interativa (validação de formulário) *(checkpoint 3)* |
-| 11 | [a definir] | Conceitos de API REST | Recursos, verbos, JSON | Explorar uma API pública com Postman |
-| 12 | [a definir] | HTTP na prática | DevTools, headers, autenticação básica | Testar requisições reais com ferramentas de inspeção |
-| 13 | [a definir] | `fetch` e consumo de API | Promises, async/await | Exibir dados de uma API na página |
-| 14 | [a definir] | Tratamento de erros | try/catch, status codes | Tratar falhas de requisição *(checkpoint 4)* |
-| 15 | [a definir] | Projeto Final — Integração | HTML + CSS + JS + API | Desenvolvimento guiado do projeto |
-| 16 | [a definir] | Projeto Final — Refinamento | Testes, organização, publicação | Publicar o projeto no GitHub *(checkpoint 5)* |
-| 17 | [a definir] | Apresentação do Projeto Final | — | Apresentação para a turma |
+| Aula  | Tema | Conteúdo | Atividade |
+|---|---|---|---|
+| 1 | Arquitetura Web e HTTP | Cliente-servidor, DNS, métodos HTTP, status codes | Mapear o ciclo de uma requisição real com DevTools |
+| 2 | HTML — Estrutura básica | Tags essenciais, links, imagens, listas | Construir uma página HTML simples |
+| 3 | HTML Semântico | Elementos estruturais, tabelas, formulários | Estruturar uma landing page semântica *(checkpoint 1)* |
+| 4 | CSS — Fundamentos | Seletores, cores, tipografia | Estilizar a landing page da aula 3 |
+| 5 | Box Model | Padding, margin, border, display | Criar cards com espaçamento correto |
+| 6 | Flexbox | display:flex, justify-content, align-items | Barra de navegação e grade de cards *(checkpoint 2)* |
+| 7 | CSS Grid | grid-template, grid-area, gap | Layout de dashboard com áreas nomeadas |
+| 8 | Responsividade | Media queries, unidades relativas, mobile first | Tornar o dashboard responsivo |
+| 9 | JavaScript — Lógica | Variáveis, operadores, condicionais, laços | Exercícios de lógica de programação |
+| 10 | JavaScript — DOM e Eventos | querySelector, addEventListener, formulários | Interface interativa (validação de formulário) *(checkpoint 3)* |
+| 11 | Conceitos de API REST | Recursos, verbos, JSON | Explorar uma API pública com Postman |
+| 12 | HTTP na prática | DevTools, headers, autenticação básica | Testar requisições reais com ferramentas de inspeção |
+| 13 |  `fetch` e consumo de API | Promises, async/await | Exibir dados de uma API na página |
+| 14 | Tratamento de erros | try/catch, status codes | Tratar falhas de requisição *(checkpoint 4)* |
+| 15 | Projeto Final — Integração | HTML + CSS + JS + API | Desenvolvimento guiado do projeto |
+| 16 | Projeto Final — Refinamento | Testes, organização, publicação | Publicar o projeto no GitHub *(checkpoint 5)* |
+| 17 | Apresentação do Projeto Final | — | Apresentação para a turma |
 
 ---
 
