@@ -1,7 +1,9 @@
 # Aula 02 — HTML: Estrutura Básica
 
 **Módulo:** Fundamentos de Arquitetura Web, Protocolo HTTP, Conceitos de API REST, HTML, CSS e JavaScript
+
 **Carga horária da aula:** 4 horas
+
 **Professor(a):** @karizeviecelli
 
 ---
