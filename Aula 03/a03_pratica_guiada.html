@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Prática Guiada — Aula 03 HTML</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}
+
+.pg-wrap{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+
+.pg-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.pg-title{font-size:18px;font-weight:600;color:#1e293b}
+.pg-meta{font-size:12px;color:#64748b;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pg-time{font-size:12px;font-weight:500;color:#64748b;background:#f1f5f9;border:1px solid #e2e8f0;padding:5px 12px;border-radius:8px}
+.next-btn{font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;font-family:inherit;transition:background .15s;display:flex;align-items:center;gap:5px}
+.next-btn:hover{background:#eff6ff}
+
+.prog-row{display:flex;align-items:center;gap:10px}
+.prog-bg{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.prog-fg{height:100%;background:#22c55e;border-radius:4px;transition:width .4s ease;width:0%}
+.prog-txt{font-size:12px;font-weight:600;color:#64748b;min-width:64px;text-align:right}
+
+.steps-list{display:flex;flex-direction:column;gap:8px}
+
+.step-card{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff;transition:border-color .2s}
+.step-card.done{border-color:#86efac}
+.step-card.active{border-color:#93c5fd}
+
+.step-head{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;cursor:pointer;user-select:none;transition:background .15s}
+.step-head:hover{background:#f8fafc}
+.step-card.open .step-head{background:#f8fafc}
+
+.step-check{width:22px;height:22px;border-radius:6px;border:1.5px solid #cbd5e1;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .18s;cursor:pointer;background:#fff}
+.step-check:hover{border-color:#3b82f6;background:#eff6ff}
+.step-check.done{background:#22c55e;border-color:#22c55e}
+.step-check svg{display:none}
+.step-check.done svg{display:block}
+
+.step-info{flex:1;min-width:0}
+.step-num{font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.step-ttl{font-size:14px;font-weight:600;color:#1e293b;line-height:1.3}
+.step-time{font-size:11px;color:#94a3b8;margin-top:3px}
+
+.chevron{color:#94a3b8;font-size:12px;margin-top:5px;transition:transform .22s;flex-shrink:0}
+.step-card.open .chevron{transform:rotate(180deg)}
+
+.step-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.step-card.open .step-body{max-height:2400px}
+.step-body-inner{padding:0 14px 16px;border-top:1px solid #f1f5f9}
+
+.instr-list{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+.instr-item{display:flex;gap:10px;font-size:13px;color:#475569;line-height:1.55;align-items:flex-start}
+.instr-n{width:20px;height:20px;min-width:20px;border-radius:5px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:2px 6px;border-radius:4px;border:1px solid #e2e8f0;color:#1e293b}
+
+.tip{background:#fffbeb;border-left:3px solid #f59e0b;padding:9px 12px;font-size:12px;color:#78350f;line-height:1.55;margin-top:8px}
+.tip strong{color:#92400e;font-weight:600}
+
+/* GABARITO SANFONA */
+.gabarito-wrap{margin-top:10px;border:1px solid #bfdbfe;border-radius:8px;overflow:hidden}
+.gab-toggle{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#eff6ff;cursor:pointer;user-select:none;transition:background .15s}
+.gab-toggle:hover{background:#dbeafe}
+.gab-label{font-size:12px;font-weight:600;color:#1e40af;display:flex;align-items:center;gap:6px}
+.gab-chev{font-size:11px;color:#1d4ed8;transition:transform .22s}
+.gabarito-wrap.gab-open .gab-chev{transform:rotate(180deg)}
+.gab-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.gabarito-wrap.gab-open .gab-body{max-height:1200px}
+.code-block{background:#1e293b;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.8;color:#94a3b8;overflow-x:auto;white-space:pre}
+.k{color:#93c5fd}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+
+.mark-btn{display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #cbd5e1;color:#64748b;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .18s;margin-top:12px}
+.mark-btn:hover{background:#f0fdf4;color:#15803d;border-color:#86efac}
+.mark-btn.done-btn{background:#f0fdf4;color:#15803d;border-color:#86efac;pointer-events:none}
+
+.success-banner{background:#f0fdf4;border:1px solid #86efac;border-radius:12px;padding:20px;text-align:center;display:none}
+.success-banner.show{display:block}
+.success-banner h3{font-size:16px;font-weight:600;color:#15803d;margin-bottom:6px}
+.success-banner p{font-size:13px;color:#475569}
+.next-big{display:inline-flex;align-items:center;gap:7px;background:#1d4ed8;color:#fff;border:none;padding:10px 22px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:12px;transition:background .15s}
+.next-big:hover{background:#1e40af}
+
+a{color:#2563eb}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div class="pg-wrap">
+
+  <div class="pg-header">
+    <div>
+      <div class="pg-title">Prática guiada — Aula 03</div>
+      <div class="pg-meta">Siga os passos. Marque cada um quando terminar.</div>
+    </div>
+    <div class="header-right">
+      <span class="pg-time">60 min disponíveis</span>
+      <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+      <button class="next-btn" onclick="window.location.href='a03_desafio.html'">🎯 Desafio →</button>
+    </div>
+  </div>
+
+  <div class="prog-row">
+    <div class="prog-bg"><div class="prog-fg" id="pfg"></div></div>
+    <div class="prog-txt" id="ptxt">0 / 7</div>
+  </div>
+
+  <div class="steps-list" id="steps-list"></div>
+
+  <div class="success-banner" id="success">
+    <h3>Parabéns! Você completou todos os passos.</h3>
+    <p>Sua landing page semântica está pronta, com header, nav, main, tabela, formulário e footer. Agora é hora do desafio autônomo!</p>
+    <button class="next-big" onclick="window.location.href='a03_desafio.html'">🎯 Ir para o Desafio →</button>
+  </div>
+
+</div>
+
+<script>
+const STEPS = [
+  {
+    title: "Criar o arquivo landing.html",
+    time: "5 min",
+    instrs: [
+      "Na mesma pasta <code>meu-site</code>, crie um novo arquivo: <code>landing.html</code>",
+      "Digite <code>!</code> + <code>Tab</code> para gerar a estrutura básica",
+      "Altere o <code>&lt;title&gt;</code> para o nome do evento fictício que você vai criar",
+      "Salve e confira o título na aba do navegador"
+    ],
+    tip: "<strong>Dica:</strong> escolha um tema que você goste — feira de tecnologia, evento de games, workshop de fotografia. Vai facilitar escrever o conteúdo.",
+    gab: null
+  },
+  {
+    title: "Header com o nome do evento",
+    time: "7 min",
+    instrs: [
+      "Dentro do <code>&lt;body&gt;</code>, crie um <code>&lt;header&gt;</code>",
+      "Adicione um <code>&lt;h1&gt;</code> com o nome do evento",
+      "Opcionalmente, adicione um <code>&lt;p&gt;</code> com data e local",
+      "Salve e veja o resultado no navegador"
+    ],
+    tip: "<strong>Lembre:</strong> header é a fachada da página — geralmente contém título e informações de identificação.",
+    gab: `<span class="k">&lt;header&gt;</span>
+  <span class="k">&lt;h1&gt;</span><span class="t">Feira de Tecnologia 2026</span><span class="k">&lt;/h1&gt;</span>
+  <span class="k">&lt;p&gt;</span><span class="t">15 de outubro · Centro de Convenções</span><span class="k">&lt;/p&gt;</span>
+<span class="k">&lt;/header&gt;</span>`
+  },
+  {
+    title: "Nav com links internos",
+    time: "8 min",
+    instrs: [
+      "Após o <code>&lt;/header&gt;</code>, crie um <code>&lt;nav&gt;</code>",
+      "Adicione pelo menos 3 links usando <code>#</code> (ex.: <code>href=\"#programacao\"</code>)",
+      "Esses IDs vão apontar para seções que você criará no próximo passo",
+      "Salve — os links já ficam clicáveis, mesmo sem estilo ainda"
+    ],
+    tip: "<strong>Por enquanto</strong> os links não têm destaque visual — isso muda quando aprendermos CSS.",
+    gab: `<span class="k">&lt;nav&gt;</span>
+  <span class="k">&lt;a</span> <span class="a">href</span>=<span class="s">"#programacao"</span><span class="k">&gt;</span><span class="t">Programação</span><span class="k">&lt;/a&gt;</span>
+  <span class="k">&lt;a</span> <span class="a">href</span>=<span class="s">"#palestrantes"</span><span class="k">&gt;</span><span class="t">Palestrantes</span><span class="k">&lt;/a&gt;</span>
+  <span class="k">&lt;a</span> <span class="a">href</span>=<span class="s">"#inscricao"</span><span class="k">&gt;</span><span class="t">Inscrição</span><span class="k">&lt;/a&gt;</span>
+<span class="k">&lt;/nav&gt;</span>`
+  },
+  {
+    title: "Main com section e tabela de programação",
+    time: "12 min",
+    instrs: [
+      "Crie um <code>&lt;main&gt;</code> após o <code>&lt;/nav&gt;</code>",
+      "Dentro, crie uma <code>&lt;section id=\"programacao\"&gt;</code> com <code>&lt;h2&gt;</code>",
+      "Adicione uma <code>&lt;table&gt;</code> com pelo menos 3 linhas (horário e atividade)",
+      "Use <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code> e <code>&lt;td&gt;</code>"
+    ],
+    tip: "<strong>Atenção:</strong> o id da section deve ser exatamente igual ao href do link do nav (sem o #) para o link funcionar.",
+    gab: `<span class="k">&lt;main&gt;</span>
+  <span class="k">&lt;section</span> <span class="a">id</span>=<span class="s">"programacao"</span><span class="k">&gt;</span>
+    <span class="k">&lt;h2&gt;</span><span class="t">Programação</span><span class="k">&lt;/h2&gt;</span>
+    <span class="k">&lt;table&gt;</span>
+      <span class="k">&lt;thead&gt;</span>
+        <span class="k">&lt;tr&gt;&lt;th&gt;</span><span class="t">Horário</span><span class="k">&lt;/th&gt;&lt;th&gt;</span><span class="t">Atividade</span><span class="k">&lt;/th&gt;&lt;/tr&gt;</span>
+      <span class="k">&lt;/thead&gt;</span>
+      <span class="k">&lt;tbody&gt;</span>
+        <span class="k">&lt;tr&gt;&lt;td&gt;</span><span class="t">09h00</span><span class="k">&lt;/td&gt;&lt;td&gt;</span><span class="t">Abertura</span><span class="k">&lt;/td&gt;&lt;/tr&gt;</span>
+        <span class="k">&lt;tr&gt;&lt;td&gt;</span><span class="t">10h00</span><span class="k">&lt;/td&gt;&lt;td&gt;</span><span class="t">Palestra</span><span class="k">&lt;/td&gt;&lt;/tr&gt;</span>
+      <span class="k">&lt;/tbody&gt;</span>
+    <span class="k">&lt;/table&gt;</span>
+  <span class="k">&lt;/section&gt;</span>
+<span class="k">&lt;/main&gt;</span>`
+  },
+  {
+    title: "Section de palestrantes com article",
+    time: "10 min",
+    instrs: [
+      "Dentro do <code>&lt;main&gt;</code>, crie <code>&lt;section id=\"palestrantes\"&gt;</code>",
+      "Adicione um <code>&lt;article&gt;</code> descrevendo um palestrante (nome + descrição)",
+      "Crie um <code>&lt;aside&gt;</code> logo depois com uma informação extra (ex.: vagas limitadas)",
+      "Salve e confira a ordem: section de palestrantes vem depois da de programação"
+    ],
+    tip: "<strong>Lembre:</strong> article é conteúdo independente. aside é conteúdo relacionado, mas secundário.",
+    gab: `<span class="k">&lt;section</span> <span class="a">id</span>=<span class="s">"palestrantes"</span><span class="k">&gt;</span>
+  <span class="k">&lt;h2&gt;</span><span class="t">Palestrantes</span><span class="k">&lt;/h2&gt;</span>
+  <span class="k">&lt;article&gt;</span>
+    <span class="k">&lt;h3&gt;</span><span class="t">Nome do Palestrante</span><span class="k">&lt;/h3&gt;</span>
+    <span class="k">&lt;p&gt;</span><span class="t">Breve descrição sobre a área de atuação.</span><span class="k">&lt;/p&gt;</span>
+  <span class="k">&lt;/article&gt;</span>
+<span class="k">&lt;/section&gt;</span>
+
+<span class="k">&lt;aside&gt;</span>
+  <span class="k">&lt;p&gt;</span><span class="t">⚠️ Vagas limitadas! Garanta sua inscrição.</span><span class="k">&lt;/p&gt;</span>
+<span class="k">&lt;/aside&gt;</span>`
+  },
+  {
+    title: "Formulário de inscrição",
+    time: "12 min",
+    instrs: [
+      "Crie <code>&lt;section id=\"inscricao\"&gt;</code> com um <code>&lt;form&gt;</code> dentro",
+      "Adicione campos de nome (<code>&lt;input type=\"text\"&gt;</code>) e e-mail (<code>&lt;input type=\"email\"&gt;</code>)",
+      "Adicione um <code>&lt;select&gt;</code> com pelo menos 2 opções de turno",
+      "Cada campo precisa de um <code>&lt;label for=\"...\"&gt;</code> correspondente, e um botão <code>type=\"submit\"</code>"
+    ],
+    tip: "<strong>Checklist rápido:</strong> todo input tem id? todo label tem for igual ao id? todo campo tem name?",
+    gab: `<span class="k">&lt;section</span> <span class="a">id</span>=<span class="s">"inscricao"</span><span class="k">&gt;</span>
+  <span class="k">&lt;h2&gt;</span><span class="t">Inscrição</span><span class="k">&lt;/h2&gt;</span>
+  <span class="k">&lt;form</span> <span class="a">action</span>=<span class="s">"/inscrever"</span> <span class="a">method</span>=<span class="s">"POST"</span><span class="k">&gt;</span>
+    <span class="k">&lt;label</span> <span class="a">for</span>=<span class="s">"nome"</span><span class="k">&gt;</span><span class="t">Nome:</span><span class="k">&lt;/label&gt;</span>
+    <span class="k">&lt;input</span> <span class="a">type</span>=<span class="s">"text"</span> <span class="a">id</span>=<span class="s">"nome"</span> <span class="a">name</span>=<span class="s">"nome"</span> <span class="a">required</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;label</span> <span class="a">for</span>=<span class="s">"email"</span><span class="k">&gt;</span><span class="t">E-mail:</span><span class="k">&lt;/label&gt;</span>
+    <span class="k">&lt;input</span> <span class="a">type</span>=<span class="s">"email"</span> <span class="a">id</span>=<span class="s">"email"</span> <span class="a">name</span>=<span class="s">"email"</span> <span class="a">required</span><span class="k">&gt;</span>
+
+    <span class="k">&lt;label</span> <span class="a">for</span>=<span class="s">"turno"</span><span class="k">&gt;</span><span class="t">Turno:</span><span class="k">&lt;/label&gt;</span>
+    <span class="k">&lt;select</span> <span class="a">id</span>=<span class="s">"turno"</span> <span class="a">name</span>=<span class="s">"turno"</span><span class="k">&gt;</span>
+      <span class="k">&lt;option&gt;</span><span class="t">Manhã</span><span class="k">&lt;/option&gt;</span>
+      <span class="k">&lt;option&gt;</span><span class="t">Tarde</span><span class="k">&lt;/option&gt;</span>
+    <span class="k">&lt;/select&gt;</span>
+
+    <span class="k">&lt;button</span> <span class="a">type</span>=<span class="s">"submit"</span><span class="k">&gt;</span><span class="t">Inscrever-se</span><span class="k">&lt;/button&gt;</span>
+  <span class="k">&lt;/form&gt;</span>
+<span class="k">&lt;/section&gt;</span>`
+  },
+  {
+    title: "Footer e validação final",
+    time: "6 min",
+    instrs: [
+      "Após o <code>&lt;/main&gt;</code>, adicione um <code>&lt;footer&gt;</code>",
+      "Dentro, coloque um <code>&lt;p&gt;</code> com informações de contato e <code>&amp;copy;</code>",
+      "Acesse <a href='https://validator.w3.org/#validate_by_input' target='_blank'>validator.w3.org</a>, cole seu HTML e corrija os erros",
+      "Releia a estrutura inteira: header → nav → main (sections) → footer"
+    ],
+    tip: "<strong>Entidade útil:</strong> <code>&amp;copy;</code> vira ©. Use sempre entidades para símbolos especiais.",
+    gab: `<span class="k">&lt;footer&gt;</span>
+  <span class="k">&lt;p&gt;</span><span class="t">Contato: contato@feiratech.com &amp;copy; 2026</span><span class="k">&lt;/p&gt;</span>
+<span class="k">&lt;/footer&gt;</span>
+
+<span class="c">&lt;!-- Estrutura final validada: --&gt;</span>
+<span class="c">&lt;!-- header → nav → main (section, section, section) → footer --&gt;</span>`
+  }
+];
+
+let done = new Set();
+
+function buildGab(code, idx) {
+  if (!code) return '';
+  return `<div class="gabarito-wrap" id="gab-${idx}">
+    <div class="gab-toggle" onclick="togGab(${idx})">
+      <div class="gab-label">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM7 4v4M7 9.5h.01"
+                stroke="#1e40af" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Ver gabarito
+      </div>
+      <span class="gab-chev">▼</span>
+    </div>
+    <div class="gab-body">
+      <div class="code-block">${code}</div>
+    </div>
+  </div>`;
+}
+
+function togGab(idx) {
+  const el = document.getElementById('gab-' + idx);
+  if (el) el.classList.toggle('gab-open');
+}
+
+function buildSteps() {
+  const list = document.getElementById('steps-list');
+  STEPS.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'step-card active' + (i === 0 ? ' open' : '');
+    card.id = 'sc-' + i;
+    card.innerHTML = `
+      <div class="step-head" onclick="toggleStep(${i})">
+        <div class="step-check" id="chk-${i}" onclick="event.stopPropagation(); markDone(${i})">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M2 6.5l3.5 3.5 5.5-5.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <div class="step-num">Passo ${i + 1} de ${STEPS.length}</div>
+          <div class="step-ttl">${s.title}</div>
+          <div class="step-time">${s.time}</div>
+        </div>
+        <span class="chevron">${i === 0 ? '▲' : '▼'}</span>
+      </div>
+      <div class="step-body">
+        <div class="step-body-inner">
+          <div class="instr-list">
+            ${s.instrs.map((t, j) => `
+              <div class="instr-item">
+                <div class="instr-n">${j + 1}</div>
+                <span>${t}</span>
+              </div>`).join('')}
+          </div>
+          ${s.tip ? `<div class="tip">${s.tip}</div>` : ''}
+          ${buildGab(s.gab, i)}
+          <button class="mark-btn" id="mb-${i}" onclick="markDone(${i})">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Marcar como concluído
+          </button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleStep(i) {
+  const card = document.getElementById('sc-' + i);
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.step-card').forEach(c => {
+    c.classList.remove('open');
+    c.querySelector('.chevron').textContent = '▼';
+  });
+  if (!isOpen) {
+    card.classList.add('open');
+    card.querySelector('.chevron').textContent = '▲';
+  }
+}
+
+function markDone(i) {
+  if (done.has(i)) return;
+  done.add(i);
+  document.getElementById('chk-' + i).classList.add('done');
+  document.getElementById('sc-' + i).classList.add('done');
+  const mb = document.getElementById('mb-' + i);
+  mb.classList.add('done-btn');
+  mb.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>Concluído!`;
+  updateProg();
+  if (i < STEPS.length - 1) {
+    document.querySelectorAll('.step-card').forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.chevron').textContent = '▼';
+    });
+    const next = document.getElementById('sc-' + (i + 1));
+    next.classList.add('open');
+    next.querySelector('.chevron').textContent = '▲';
+    setTimeout(() => next.scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
+  }
+  if (done.size === STEPS.length) {
+    document.getElementById('success').classList.add('show');
+    setTimeout(() => document.getElementById('success').scrollIntoView({behavior:'smooth', block:'nearest'}), 200);
+  }
+}
+
+function updateProg() {
+  const pct = Math.round((done.size / STEPS.length) * 100);
+  document.getElementById('pfg').style.width = pct + '%';
+  document.getElementById('ptxt').textContent = done.size + ' / ' + STEPS.length;
+}
+
+buildSteps();
+updateProg();
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a03_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0;white-space:nowrap" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">&#8592; Demo ao Vivo</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 03 &middot; 3 de 5 &middot; Prática Guiada<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a03_desafio.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Desafio &#8594;</a>
+</div>
+</body>
+</html>

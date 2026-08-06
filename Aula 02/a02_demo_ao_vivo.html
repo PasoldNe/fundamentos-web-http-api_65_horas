@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Demonstração ao vivo — Aula 02 HTML</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}
+
+.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:1100px;margin:0 auto}
+
+.panel{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff}
+
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.panel-title{font-size:12px;font-weight:500;color:#64748b}
+.dots-row{display:flex;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%}
+
+.editor-body{background:#1E293B;min-height:340px;padding:16px;font-family:'Courier New',monospace;font-size:12px;line-height:1.75;color:#94A3B8;overflow:hidden;position:relative}
+#code-output{white-space:pre-wrap;word-break:break-all}
+.cursor{display:inline-block;width:2px;height:14px;background:#60A5FA;vertical-align:middle;animation:blink .9s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.preview-body{background:#ffffff;min-height:340px;padding:16px;overflow-y:auto}
+
+.step-bar{padding:12px 16px;border-top:1px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;gap:10px;grid-column:1/-1}
+.step-label{font-size:12px;color:#64748b;flex:1;line-height:1.4}
+.step-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;background:#eff6ff;color:#1d4ed8}
+.ctrl-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#1e293b;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.ctrl-btn:hover{background:#f1f5f9}
+.ctrl-btn.go{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.ctrl-btn.go:hover{background:#1e40af}
+.ctrl-btn:disabled{opacity:.35;pointer-events:none}
+
+.narr-box{grid-column:1/-1;border:1px solid #e2e8f0;border-radius:8px;padding:12px 16px;background:#f8fafc;font-size:13px;color:#475569;line-height:1.6;min-height:52px}
+.narr-box strong{color:#1e293b;font-weight:600}
+
+.prog-track{height:3px;background:#e2e8f0;border-radius:2px;grid-column:1/-1;overflow:hidden}
+.prog-fill{height:100%;background:#3b82f6;border-radius:2px;transition:width .3s ease;width:0%}
+
+.page-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.page-title h1{font-size:16px;font-weight:600;color:#1e293b}
+.page-title p{font-size:12px;color:#94a3b8}
+
+.k{color:#93C5FD}
+.kv{color:#6EE7B7}
+.a{color:#FDE68A}
+.s{color:#FDA4AF}
+.t{color:#E2E8F0}
+.c{color:#475569;font-style:italic}
+
+@media(max-width:700px){
+  .demo-wrap{grid-template-columns:1fr}
+  .panel:last-of-type{display:none}
+}
+
+/* ── Autoria @karizeviecelli ── */
+.autoria-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:600;color:#2563eb;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  padding:2px 9px;border-radius:20px;text-decoration:none;
+  font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap;
+}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+  <div class="page-title">
+    <h1>Demonstração ao vivo — Aula 02</h1>
+    <p>Docente digita · Alunos acompanham &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p>
+
+    <button onclick="window.location.href='a02_pratica_guiada.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">📝 Prática →</button></div>
+
+  <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">VS Code — perfil.html</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="editor-body"><span id="code-output"></span><span class="cursor" id="cur"></span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hdr">
+      <span class="panel-title">Navegador — resultado ao vivo</span>
+      <div class="dots-row">
+        <div class="dot" style="background:#ef4444"></div>
+        <div class="dot" style="background:#f59e0b"></div>
+        <div class="dot" style="background:#10b981"></div>
+      </div>
+    </div>
+    <div class="preview-body" id="preview"></div>
+  </div>
+
+  <div class="narr-box" id="narr">Pronto para começar. Clique em <strong>Iniciar digitação</strong> para ver o docente construir a página de perfil do zero.</div>
+
+  <div class="step-bar">
+    <span class="step-badge" id="step-badge">Etapa 1 / 8</span>
+    <span class="step-label" id="step-desc">Estrutura mínima do HTML5</span>
+    <button class="ctrl-btn" id="btn-prev" onclick="prevStep()" disabled>&#8592; Anterior</button>
+    <button class="ctrl-btn go" id="btn-play" onclick="playStep()">Iniciar digitação</button>
+    <button class="ctrl-btn" id="btn-next" onclick="nextStep()" disabled>Próxima &#8594;</button>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {
+    label: "Estrutura mínima — !DOCTYPE e raiz",
+    narr: "<strong>Docente:</strong> \"Toda página começa com estas linhas. O <code>!DOCTYPE html</code> avisa o navegador que é HTML5. O <code>lang='pt-BR'</code> ajuda leitores de tela e o Google. O <code>charset UTF-8</code> garante que acentos apareçam certinho.\"",
+    code: `<span class="c">&lt;!-- Aula 02 — perfil.html --&gt;</span>\n<span class="k">&lt;!DOCTYPE html&gt;</span>\n<span class="k">&lt;html</span> <span class="a">lang</span>=<span class="s">"pt-BR"</span><span class="k">&gt;</span>\n<span class="k">&lt;head&gt;</span>\n  <span class="k">&lt;meta</span> <span class="a">charset</span>=<span class="s">"UTF-8"</span><span class="k">&gt;</span>\n  <span class="k">&lt;title&gt;</span><span class="t">Perfil - Karize</span><span class="k">&lt;/title&gt;</span>\n<span class="k">&lt;/head&gt;</span>\n<span class="k">&lt;body&gt;</span>\n\n<span class="k">&lt;/body&gt;</span>\n<span class="k">&lt;/html&gt;</span>`,
+    preview: `<p style="font-size:12px;color:#94a3b8;font-style:italic">Nada visível ainda — body está vazio.</p>`
+  },
+  {
+    label: "Título principal com h1",
+    narr: "<strong>Docente:</strong> \"Dentro do <code>&lt;body&gt;</code>, adiciono um <code>&lt;h1&gt;</code> com meu nome. É o título principal — geralmente aparece só uma vez na página.\"",
+    code: `<span class="k">&lt;body&gt;</span>\n\n  <span class="k">&lt;h1&gt;</span><span class="t">Karize</span><span class="k">&lt;/h1&gt;</span>\n\n<span class="k">&lt;/body&gt;</span>`,
+    preview: `<h1 style="font-size:22px;font-weight:600;font-family:system-ui;color:#1e293b">Karize</h1>`
+  },
+  {
+    label: "Parágrafo com strong e em",
+    narr: "<strong>Docente:</strong> \"Adiciono um <code>&lt;p&gt;</code> de apresentação. Uso <code>&lt;strong&gt;</code> para destacar algo importante e <code>&lt;em&gt;</code> para dar ênfase. Reparem: não é só visual, é significado.\"",
+    code: `  <span class="k">&lt;h1&gt;</span><span class="t">Karize</span><span class="k">&lt;/h1&gt;</span>\n\n  <span class="k">&lt;p&gt;</span>\n    <span class="t">Estudante de Desenvolvimento de Sistemas.</span>\n    <span class="k">&lt;strong&gt;</span><span class="t">Apaixonada por tecnologia</span><span class="k">&lt;/strong&gt;</span>\n    <span class="t">e sempre em busca de</span>\n    <span class="k">&lt;em&gt;</span><span class="t">novos desafios</span><span class="k">&lt;/em&gt;</span><span class="t">.</span>\n  <span class="k">&lt;/p&gt;</span>`,
+    preview: `<h1 style="font-size:20px;font-weight:600;font-family:system-ui;margin-bottom:6px">Karize</h1><p style="font-size:13px;font-family:system-ui;color:#475569;line-height:1.6">Estudante de Desenvolvimento de Sistemas. <strong>Apaixonada por tecnologia</strong> e sempre em busca de <em>novos desafios</em>.</p>`
+  },
+  {
+    label: "Imagem com alt, width e height",
+    narr: "<strong>Docente:</strong> \"Adiciono uma imagem. Reparem nos 4 atributos: <code>src</code> (de onde vem), <code>alt</code> (texto alternativo — essencial!), <code>width</code> e <code>height</code>. Sem o alt, quem usa leitor de tela não sabe o que é essa imagem.\"",
+    code: `  <span class="k">&lt;p&gt;</span><span class="t">...</span><span class="k">&lt;/p&gt;</span>\n\n  <span class="k">&lt;img</span>\n    <span class="a">src</span>=<span class="s">"foto.jpg"</span>\n    <span class="a">alt</span>=<span class="s">"Foto de perfil de Karize"</span>\n    <span class="a">width</span>=<span class="s">"120"</span>\n    <span class="a">height</span>=<span class="s">"120"</span><span class="k">&gt;</span>`,
+    preview: `<div style="font-family:system-ui"><h1 style="font-size:18px;font-weight:600;margin-bottom:4px">Karize</h1><p style="font-size:12px;color:#475569;margin-bottom:8px">Estudante de Desenvolvimento de Sistemas.</p><div style="width:80px;height:80px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#3b82f6">foto.jpg</div></div>`
+  },
+  {
+    label: "Lista não ordenada — hobbies",
+    narr: "<strong>Docente:</strong> \"Para os hobbies, uso <code>&lt;ul&gt;</code> — lista SEM ordem específica. Cada item é um <code>&lt;li&gt;</code>. O navegador já coloca o marcador (bolinha) automaticamente.\"",
+    code: `  <span class="k">&lt;h2&gt;</span><span class="t">Hobbies</span><span class="k">&lt;/h2&gt;</span>\n  <span class="k">&lt;ul&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Programação</span><span class="k">&lt;/li&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Leitura</span><span class="k">&lt;/li&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Fotografia</span><span class="k">&lt;/li&gt;</span>\n  <span class="k">&lt;/ul&gt;</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#475569"><h2 style="font-size:14px;font-weight:600;color:#1e293b;margin-bottom:6px">Hobbies</h2><ul style="padding-left:18px;line-height:1.8"><li>Programação</li><li>Leitura</li><li>Fotografia</li></ul></div>`
+  },
+  {
+    label: "Lista ordenada — rotina de estudos",
+    narr: "<strong>Docente:</strong> \"Para a rotina de estudos, a ORDEM importa — então uso <code>&lt;ol&gt;</code>. Vejam a diferença no preview: agora aparecem números em vez de bolinhas.\"",
+    code: `  <span class="k">&lt;h2&gt;</span><span class="t">Rotina de estudos</span><span class="k">&lt;/h2&gt;</span>\n  <span class="k">&lt;ol&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Revisar a aula anterior</span><span class="k">&lt;/li&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Praticar exercícios</span><span class="k">&lt;/li&gt;</span>\n    <span class="k">&lt;li&gt;</span><span class="t">Ler a documentação</span><span class="k">&lt;/li&gt;</span>\n  <span class="k">&lt;/ol&gt;</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#475569"><h2 style="font-size:14px;font-weight:600;color:#1e293b;margin-bottom:6px">Rotina de estudos</h2><ol style="padding-left:18px;line-height:1.8"><li>Revisar a aula anterior</li><li>Praticar exercícios</li><li>Ler a documentação</li></ol></div>`
+  },
+  {
+    label: "Link absoluto — para outro site",
+    narr: "<strong>Docente:</strong> \"Este link tem endereço completo — é um link ABSOLUTO, aponta para outro site. Note o <code>target='_blank'</code> (abre em nova aba) e <code>rel='noopener'</code> (segurança — sempre use os dois juntos).\"",
+    code: `  <span class="k">&lt;p&gt;</span>\n    <span class="t">Consulte a</span>\n    <span class="k">&lt;a</span>\n      <span class="a">href</span>=<span class="s">"https://developer.mozilla.org"</span>\n      <span class="a">target</span>=<span class="s">"_blank"</span>\n      <span class="a">rel</span>=<span class="s">"noopener"</span><span class="k">&gt;</span>\n      <span class="t">documentação MDN</span>\n    <span class="k">&lt;/a&gt;</span>\n  <span class="k">&lt;/p&gt;</span>`,
+    preview: `<p style="font-family:system-ui;font-size:12px;color:#475569">Consulte a <a href="#" style="color:#2563eb">documentação MDN</a></p>`
+  },
+  {
+    label: "Link relativo — página do mesmo projeto",
+    narr: "<strong>Docente:</strong> \"Este outro link não tem endereço completo — é RELATIVO, aponta para um arquivo do mesmo projeto, como <code>contato.html</code>. Ele ainda não existe, mas o link já funciona no código.\"",
+    code: `  <span class="k">&lt;p&gt;</span>\n    <span class="t">Quer falar comigo?</span>\n    <span class="k">&lt;a</span> <span class="a">href</span>=<span class="s">"contato.html"</span><span class="k">&gt;</span>\n      <span class="t">Ir para a página de contato</span>\n    <span class="k">&lt;/a&gt;</span>\n  <span class="k">&lt;/p&gt;</span>\n\n<span class="c">&lt;!-- Página pronta! Agora é a vez de vocês. --&gt;</span>`,
+    preview: `<div style="font-family:system-ui;font-size:12px;color:#475569"><p style="margin-bottom:6px">Quer falar comigo? <a href="#" style="color:#2563eb">Ir para a página de contato</a></p><p style="color:#94a3b8;font-style:italic">Página de perfil completa.</p></div>`
+  }
+];
+
+let cur=0, typing=false, typeTimer=null;
+
+function render(){
+  const s=STEPS[cur];
+  document.getElementById('step-badge').textContent=`Etapa ${cur+1} / ${STEPS.length}`;
+  document.getElementById('step-desc').textContent=s.label;
+  document.getElementById('prog').style.width=`${Math.round(((cur+1)/STEPS.length)*100)}%`;
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+  document.getElementById('narr').innerHTML=s.narr;
+  document.getElementById('preview').innerHTML=s.preview||'';
+}
+
+function showCode(s){
+  document.getElementById('code-output').innerHTML=s.code;
+}
+
+function playStep(){
+  if(typing)return;
+  typing=true;
+  const s=STEPS[cur];
+  const out=document.getElementById('code-output');
+  out.innerHTML='';
+  document.getElementById('btn-play').disabled=true;
+  document.getElementById('btn-prev').disabled=true;
+  document.getElementById('btn-next').disabled=true;
+
+  const full=s.code;
+  const stripped=full.replace(/<[^>]+>/g,'');
+  const htmlParts=[];
+  let i=0,pos=0;
+  while(i<full.length){
+    if(full[i]==='<'){
+      const end=full.indexOf('>',i);
+      if(end!==-1){htmlParts.push({type:'tag',val:full.slice(i,end+1),pos});i=end+1;continue;}
+    }
+    htmlParts.push({type:'char',val:full[i],pos,ch:stripped[pos]||''});
+    pos++;i++;
+  }
+
+  let pi=0;
+  function tick(){
+    if(pi>=htmlParts.length){
+      typing=false;
+      document.getElementById('btn-play').textContent='Rever';
+      document.getElementById('btn-play').disabled=false;
+      document.getElementById('btn-next').disabled=cur===STEPS.length-1;
+      document.getElementById('btn-prev').disabled=false;
+      return;
+    }
+    const p=htmlParts[pi];
+    if(p.type==='tag'){out.innerHTML+=p.val;pi++;tick();return;}
+    out.innerHTML+=p.val;
+    pi++;
+    const delay=p.ch==='\n'?60:p.ch===' '?20:Math.random()*25+18;
+    typeTimer=setTimeout(tick,delay);
+  }
+  tick();
+}
+
+function nextStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.min(cur+1,STEPS.length-1);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+function prevStep(){
+  if(typing){clearTimeout(typeTimer);typing=false;}
+  cur=Math.max(cur-1,0);
+  render();
+  showCode(STEPS[cur]);
+  document.getElementById('btn-play').textContent='Rever';
+  document.getElementById('btn-play').disabled=false;
+}
+
+render();
+document.getElementById('code-output').innerHTML='';
+document.getElementById('btn-play').textContent='Iniciar digitação';
+</script>
+
+<!-- NAV BAR -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a02_exposicao.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0;white-space:nowrap" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">&#8592; Exposição</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 02 &middot; 2 de 5 &middot; Demo ao Vivo<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a02_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Prática Guiada &#8594;</a>
+</div>
+</body>
+</html>
