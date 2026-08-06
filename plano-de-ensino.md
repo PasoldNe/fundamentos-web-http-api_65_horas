@@ -1,30 +1,17 @@
 # Plano de Ensino — Arquitetura Web, HTTP, API REST, HTML, CSS e JavaScript
 
 **Curso:** Técnico em Desenvolvimento de Sistemas
-
 **Módulo:** Fundamentos de Arquitetura Web, Protocolo HTTP, Conceitos de API REST, HTML, CSS e JavaScript
-
 **Carga Horária:** 65 horas
-
+**Período:** [a definir]
 **Professor(a):** @karizeviecelli
-
 **Data de elaboração:** 05 de agosto de 2026
 
 ---
 
 ## Ementa
 
--> Fundamentos de arquitetura da Web (cliente-servidor, DNS, hospedagem) e do protocolo HTTP (métodos, status codes, headers, ciclo requisição-resposta). 
-
--> Construção de páginas web com HTML: estrutura, elementos semânticos, formulários, tabelas e multimídia. 
-
--> Linguagem CSS: seletores, propriedades, box model, flexbox, grid, responsividade. 
-
--> Linguagem JavaScript: lógica de programação, manipulação do DOM, eventos e, na etapa de aprofundamento, 
-
--> Conceitos de API REST (recursos, verbos, JSON) e consumo de dados reais via `fetch`. 
-
--> Projeto final: painel/aplicação web funcional, integrando HTML, CSS, JavaScript e consumo de uma API REST.
+Fundamentos de arquitetura da Web (cliente-servidor, DNS, hospedagem) e do protocolo HTTP (métodos, status codes, headers, ciclo requisição-resposta). Construção de páginas web com HTML: estrutura, elementos semânticos, formulários, tabelas e multimídia. Linguagem CSS: seletores, propriedades, box model, flexbox, grid, responsividade. Linguagem JavaScript: lógica de programação, manipulação do DOM, eventos e, na etapa de aprofundamento, Conceitos de API REST (recursos, verbos, JSON) e consumo de dados reais via `fetch`. Projeto final: painel/aplicação web funcional, integrando HTML, CSS, JavaScript e consumo de uma API REST.
 
 ---
 
@@ -54,8 +41,8 @@ Capacitar o estudante a compreender a arquitetura da Web e o protocolo HTTP, e a
 |---|---|---|---|
 | 1 | Fundamentos de Arquitetura Web e HTTP | 1 | Cliente-servidor, DNS, hospedagem, métodos HTTP, headers, status codes |
 | 2 | HTML | 2–3 | Estrutura básica, semântica, formulários, tabelas, multimídia |
-| 3 | CSS | 4–6 | Seletores, box model, Flexbox, Grid, responsividade |
-| 4 | JavaScript — Fundamentos | 7–10 | Lógica, variáveis, funções, DOM, eventos |
+| 3 | CSS | 4–8 | Seletores, box model, Flexbox, Grid, responsividade |
+| 4 | JavaScript — Fundamentos | 9–10 | Lógica, variáveis, funções, DOM, eventos |
 | 5 | JavaScript — Aprofundamento e API REST | 11–14 | Conceitos de API REST, JSON, `fetch`, autenticação, tratamento de erros |
 | 6 | Projeto Final | 15–17 | Integração HTML+CSS+JS+API, publicação no GitHub, apresentação |
 
@@ -63,83 +50,105 @@ Capacitar o estudante a compreender a arquitetura da Web e o protocolo HTTP, e a
 
 ## Conteúdo Programático (Ementa Detalhada)
 
-### 1. Fundamentos de Arquitetura Web
+Organizado aula a aula, na mesma ordem do Cronograma abaixo.
+
+### Aula 1 — Arquitetura Web e Protocolo HTTP
 - Modelo cliente-servidor e funcionamento da internet
 - DNS, URLs, domínios e hospedagem
 - Arquitetura de aplicações web (front-end, back-end, banco de dados)
-
-### 2. Protocolo HTTP
 - Ciclo de vida da requisição e resposta
 - Métodos HTTP: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`
 - Headers e códigos de status (2xx, 3xx, 4xx, 5xx)
-- Ferramentas de inspeção: DevTools, Postman/Thunder Client
+- Ferramentas de inspeção: DevTools
 
-### 3. HTML — Estrutura e Semântica
+### Aula 2 — HTML: Estrutura Básica
 - Estrutura básica: `<!DOCTYPE>`, `<html>`, `<head>`, `<body>`
 - Tags de título (`<h1>` a `<h6>`), parágrafo (`<p>`), quebra de linha (`<br>`)
 - Ênfase e destaque com `<strong>` e `<em>`
 - Hiperligações (`<a>`) e caminhos absolutos/relativos
 - Imagens (`<img>`) e atributos `src`, `alt`, `width`, `height`
 - Listas ordenadas (`<ol>`) e não ordenadas (`<ul>`)
+
+### Aula 3 — HTML Semântico, Formulários e Multimídia
 - Elementos semânticos: `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`
 - Tabelas: `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<td>`, `<th>`
 - Formulários: `<form>`, `<input>`, `<label>`, `<textarea>`, `<select>`, `<button>`, atributos `action`, `method`, `name`
 - Multimídia: `<video>`, `<audio>`, `<iframe>`
 
-### 4. Introdução ao CSS
+### Aula 4 — Introdução ao CSS
 - Formas de inclusão: inline, interno (`<style>`) e externo (`<link>`)
 - Seletores: de tag, classe (`.`), id (`#`), universal (`*`), descendente, filho (`>`)
 - Propriedades básicas: `color`, `background-color`, `font-family`, `font-size`, `text-align`
 - Unidades: `px`, `%`, `em`, `rem`, `vh`, `vw`
 
-### 5. Box Model e Espaçamento
+### Aula 5 — Box Model e Espaçamento
 - Conceito de box model: `content`, `padding`, `border`, `margin`
 - Propriedades: `width`, `height`, `padding`, `margin`, `border`
 - `box-sizing: border-box;`
 - `display`: `block`, `inline`, `inline-block`, `none`
 
-### 6. Layout com Flexbox
+### Aula 6 — Layout com Flexbox
 - Propriedades do container: `display: flex`, `flex-direction`, `justify-content`, `align-items`, `flex-wrap`, `gap`
 - Propriedades dos itens: `flex`, `flex-grow`, `flex-shrink`, `flex-basis`, `align-self`, `order`
 - Exemplos práticos: centralização, barra de navegação, grade de cards
 
-### 7. Layout com CSS Grid
+### Aula 7 — Layout com CSS Grid
 - Definição: `display: grid`, `grid-template-columns`, `grid-template-rows`, `gap`
 - Posicionamento: `grid-column`, `grid-row`, `grid-area`
 - Áreas nomeadas: `grid-template-areas`
 - Comparação entre Flexbox e Grid
 
-### 8. Responsividade e Media Queries
+### Aula 8 — Responsividade e Media Queries
 - Conceito de design responsivo
 - Sintaxe de media queries: `@media (max-width: 768px) { ... }`
 - Breakpoints comuns (480px, 768px, 1024px)
 - Imagens fluídas, unidades relativas e mobile first
 
-### 9. JavaScript — Lógica e Fundamentos
+### Aula 9 — JavaScript: Lógica e Fundamentos
 - Variáveis (`let`, `const`) e tipos de dados
 - Operadores e estruturas condicionais
 - Estruturas de repetição (`for`, `while`)
 - Funções: declaração, parâmetros, retorno
 
-### 10. JavaScript — DOM e Eventos
+### Aula 10 — JavaScript: DOM e Eventos
 - Seleção de elementos: `querySelector`, `getElementById`
 - Manipulação de elementos: `innerHTML`, `classList`, `style`
 - Eventos: `click`, `submit`, `input`, `addEventListener`
 
-### 11. Conceitos de API REST
+### Aula 11 — Conceitos de API REST
 - Recursos, endpoints e verbos HTTP (`GET`, `POST`, `PUT`, `DELETE`)
 - Formato JSON: estrutura, tipos de dados, `JSON.parse`/`JSON.stringify`
 - Autenticação básica (API keys, tokens)
 
-### 12. Consumindo APIs com JavaScript
+### Aula 12 — HTTP na Prática
+- Revisão de headers, status codes e ciclo requisição-resposta aplicados a APIs reais
+- Ferramentas de inspeção: Postman/Thunder Client
+- Testes manuais de endpoints (GET, POST) e leitura de respostas JSON
+
+### Aula 13 — `fetch` e Consumo de API
 - `fetch`, Promises e `async`/`await`
-- Tratamento de erros (`try/catch`, verificação de status codes)
+- Requisições GET a APIs públicas
 - Integração dos dados da API com o DOM (renderização dinâmica)
 
-### 13. Integração com Projeto Final
+### Aula 14 — Tratamento de Erros em Requisições
+- Tratamento de erros (`try/catch`, verificação de status codes)
+- Estados de carregamento, erro e sucesso na interface
+- Boas práticas de autenticação básica em requisições
+
+### Aula 15 — Projeto Final: Integração
 - Planejamento e wireframe do projeto
 - Integração HTML + CSS + JavaScript + API REST
 - Estilização temática e boas práticas de organização do código
+
+### Aula 16 — Projeto Final: Refinamento e Publicação
+- Testes, correção de bugs e revisão de código
+- Organização do repositório Git
+- Publicação do projeto no GitHub (GitHub Pages)
+
+### Aula 17 — Apresentação do Projeto Final
+- Apresentação do projeto para a turma
+- Explicação das decisões técnicas e de arquitetura
+- Feedback do(a) professor(a) e dos colegas
 
 ---
 
