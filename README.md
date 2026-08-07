@@ -2,6 +2,9 @@
 
 **Por [@karizeviecelli](https://github.com/karizeviecelli) · 2026**
 
+link para o **Plano de Ensino e Aulas**
+https://karizeviecelli.github.io/fundamentos-web-http-api_65_horas/
+
 Bem-vindo(a)! Este repositório reúne todo o material da unidade curricular **Fundamentos de Arquitetura Web, Protocolo HTTP, Conceitos de API REST, HTML, CSS e JavaScript**, do curso Técnico em Desenvolvimento de Sistemas.
 
 Aqui você vai encontrar as aulas, atividades, gabaritos e o roteiro do seu projeto final.
