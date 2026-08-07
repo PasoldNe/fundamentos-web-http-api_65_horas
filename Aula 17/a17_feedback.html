@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="@karizeviecelli"><meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados."><title>Painel de Avaliação — Aula 17 Apresentação do Projeto Final</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}.wrap{max-width:960px;margin:0 auto}.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.hdr h1{font-size:16px;font-weight:600}.hdr p{font-size:12px;color:#94a3b8}.chkbadge{font-size:10px;font-weight:700;background:#052e1a;color:#4ade80;padding:2px 9px;border-radius:20px;margin-left:6px}.autoria-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;padding:2px 9px;border-radius:20px;text-decoration:none;font-family:'Courier New',monospace}.autoria-badge:hover{background:#bfdbfe}.toolbar{display:flex;gap:8px;margin-bottom:14px}.tbtn{font-size:12px;font-weight:600;padding:8px 16px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-family:inherit}.tbtn.add{background:#1d4ed8;color:#fff;border-color:#1d4ed8}.tbtn.csv{background:#16a34a;color:#fff;border-color:#16a34a}table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#94a3b8;text-align:left;padding:10px 12px;background:#f8fafc;border-bottom:1px solid #e2e8f0}td{padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:12px}tr:last-child td{border-bottom:none}input[type=text],select{font-family:inherit;font-size:12px;padding:5px 7px;border:1px solid #e2e8f0;border-radius:6px;width:100%}input[type=number]{font-family:inherit;font-size:12px;padding:5px 7px;border:1px solid #e2e8f0;border-radius:6px;width:56px}.crit{font-size:10px;color:#64748b}.total-cell{font-weight:700;color:#1d4ed8}.rm-btn{color:#dc2626;background:none;border:none;cursor:pointer;font-size:14px}.legend{font-size:11px;color:#94a3b8;margin-top:10px;line-height:1.7}.legend strong{color:#475569}.closing{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 20px;margin-top:20px;font-size:13px;color:#166534;line-height:1.7}</style></head>
+<body>
+<div class="wrap">
+  <div class="hdr"><h1>Painel de Avaliação — Aula 17 <span class="chkbadge">🎓 Encerramento</span></h1><p>Apresentação do Projeto Final &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p></div>
+  <div class="toolbar"><button class="tbtn add" onclick="addAluno()">+ Adicionar aluno</button><button class="tbtn csv" onclick="exportarCSV()">⬇ Exportar CSV</button></div>
+  <table>
+    <thead><tr>
+      <th style="width:14%">Aluno</th>
+      <th style="width:10%">Clareza<br><span class="crit">/2</span></th>
+      <th style="width:10%">Demo ao vivo<br><span class="crit">/2</span></th>
+      <th style="width:10%">Decisão técnica<br><span class="crit">/2</span></th>
+      <th style="width:10%">Desafio<br><span class="crit">/2</span></th>
+      <th style="width:10%">Tempo/ritmo<br><span class="crit">/2</span></th>
+      <th style="width:8%">Total</th>
+      <th style="width:18%">Feedback recebido</th>
+      <th style="width:4%"></th>
+    </tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="legend"><strong>Critérios:</strong> Clareza (propósito do projeto entendido rapidamente) · Demo ao vivo (funcionou sem quebrar) · Decisão técnica (explicação de uma escolha, com justificativa) · Desafio (problema real compartilhado e como foi resolvido) · Tempo/ritmo (dentro de 2-4 min, sem ler código linha a linha).</div>
+  <div class="closing">🎓 <strong>Fim do curso!</strong> Da Aula 1 ao 17, cada aluno construiu, testou e publicou um projeto real integrando HTML, CSS, JavaScript e uma API. Use este painel para consolidar a avaliação final da turma.</div>
+</div>
+<script>
+const PONTOS = ['clareza','demo','decisao','desafio','ritmo'];
+let alunos = [{nome:'', notas:{clareza:0,demo:0,decisao:0,desafio:0,ritmo:0}, obs:''}];
+function total(a){return PONTOS.reduce((s,k)=>s+Number(a.notas[k]||0),0);}
+function buildAlunos(){const tb=document.getElementById('tbody');tb.innerHTML = alunos.map((a,i)=>`
+    <tr>
+      <td><input type="text" value="${a.nome}" placeholder="Nome" oninput="updateNome(${i},this.value)"></td>
+      ${PONTOS.map(k=>`<td><input type="number" min="0" max="2" value="${a.notas[k]}" oninput="updateNota(${i},'${k}',this.value)"></td>`).join('')}
+      <td class="total-cell">${total(a)}</td>
+      <td><input type="text" value="${a.obs}" placeholder="Resumo do feedback da turma" oninput="updateObs(${i},this.value)"></td>
+      <td><button class="rm-btn" onclick="rmAluno(${i})">✕</button></td>
+    </tr>`).join('');}
+function updateNome(i,v){alunos[i].nome=v;}
+function updateNota(i,k,v){alunos[i].notas[k]=Math.max(0,Math.min(2,Number(v)||0));buildAlunos();}
+function updateObs(i,v){alunos[i].obs=v;}
+function addAluno(){alunos.push({nome:'', notas:{clareza:0,demo:0,decisao:0,desafio:0,ritmo:0}, obs:''});buildAlunos();}
+function rmAluno(i){alunos.splice(i,1);buildAlunos();}
+function csvEscape(v){v=String(v??'');if(/[;"\n]/.test(v)){v='"'+v.replace(/"/g,'""')+'"';}return v;}
+function exportarCSV(){const header=['Aluno','Clareza','Demo ao vivo','Decisão técnica','Desafio','Tempo/ritmo','Total','Feedback recebido'];const rows=alunos.map(a=>[a.nome,a.notas.clareza,a.notas.demo,a.notas.decisao,a.notas.desafio,a.notas.ritmo,total(a),a.obs]);let csv='﻿'+header.map(csvEscape).join(';')+'\n';rows.forEach(r=>{csv+=r.map(csvEscape).join(';')+'\n';});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const d=new Date().toISOString().slice(0,10);a.href=url;a.download=`aula17-feedback-apresentacoes-${d}.csv`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+buildAlunos();
+</script>
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a17_desafio.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0">&#8592; Checklist Final</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 17 &middot; 5 de 5 &middot; Painel de Avaliação<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a17_exposicao.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none">Rever Briefing ↻</a>
+</div>
+</body></html>

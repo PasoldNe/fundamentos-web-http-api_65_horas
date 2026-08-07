@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     Material didático desenvolvido por @karizeviecelli
+     © 2026 — Todos os direitos reservados.
+     Uso autorizado exclusivamente para fins educacionais.
+     Redistribuição sem crédito é proibida.
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="@karizeviecelli">
+  <meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados.">
+<title>Exposição Dialogada — HTTP na Prática · Aula 12</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;padding-bottom:52px}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.badge{background:#1d4ed8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hdr-title{font-size:14px;font-weight:600;color:#1e293b}
+.hdr-sub{font-size:12px;color:#94a3b8;margin-top:1px}
+.timer{font-size:13px;font-weight:500;color:#64748b;background:#f1f5f9;padding:5px 14px;border-radius:8px;border:1px solid #e2e8f0;min-width:64px;text-align:center;font-family:'Courier New',monospace}
+.timer.warn{color:#d97706;background:#fffbeb;border-color:#fcd34d}
+.timer.danger{color:#dc2626;background:#fef2f2;border-color:#fca5a5}
+.dots{display:flex;align-items:center;gap:6px;padding:10px 20px;border-bottom:1px solid #e2e8f0;background:#fff;flex-shrink:0;overflow-x:auto;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0;cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:#1d4ed8;transform:scale(1.45)}
+.dot.done{background:#93c5fd;opacity:.6}
+.dot-sep{width:12px;height:1px;background:#e2e8f0;flex-shrink:0}
+.slide-wrap{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;padding:24px 28px;overflow-y:auto;display:none}
+.slide.active{display:block;animation:sIn .25s ease}
+@keyframes sIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94a3b8;margin-bottom:6px}
+.slide-title{font-size:22px;font-weight:600;color:#1e293b;line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:#64748b;line-height:1.6;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.card.accent{border-left:3px solid #1d4ed8}
+.card-icon{font-size:20px;margin-bottom:6px}
+.card-title{font-size:13px;font-weight:600;color:#1e293b;margin-bottom:4px}
+.card-body{font-size:12px;color:#64748b;line-height:1.55}
+.card-body code{font-family:'Courier New',monospace;font-size:11px;background:#f1f5f9;padding:1px 4px;border-radius:3px;border:1px solid #e2e8f0}
+.code-wrap{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin:10px 0}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;padding:7px 14px;border-bottom:1px solid #e2e8f0}
+.code-lang{font-size:11px;font-weight:500;color:#64748b}
+.cdots{display:flex;gap:5px}
+.cdot{width:10px;height:10px;border-radius:50%}
+pre{background:#1e293b;color:#e2e8f0;padding:14px 16px;font-size:12px;line-height:1.75;overflow-x:auto;font-family:'Courier New',monospace;white-space:pre}
+.k{color:#93c5fd}.a{color:#fde68a}.s{color:#fda4af}.t{color:#e2e8f0}.c{color:#475569;font-style:italic}
+.tag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:500px){.tag-grid{grid-template-columns:1fr 1fr}}
+.tag-item{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s}
+.tag-item:hover{border-color:#93c5fd;background:#eff6ff}
+.tag-item.tag-on{border-color:#1d4ed8;background:#eff6ff}
+.tag-code{font-size:12px;font-weight:600;color:#1d4ed8;font-family:'Courier New',monospace;margin-bottom:3px}
+.tag-name{font-size:11px;color:#94a3b8}
+.tag-preview{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;min-height:56px;font-size:13px;color:#64748b;line-height:1.6}
+.tag-preview strong{color:#1e293b;font-weight:600;font-family:'Courier New',monospace}
+.quiz-q{font-size:14px;font-weight:600;color:#1e293b;margin-bottom:12px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:13px;color:#1e293b;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover:not(.correct):not(.wrong):not(.dimmed){border-color:#93c5fd;background:#eff6ff}
+.quiz-opt.correct{background:#f0fdf4;border-color:#86efac;color:#15803d;pointer-events:none}
+.quiz-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#dc2626;pointer-events:none}
+.quiz-opt.dimmed{opacity:.4;pointer-events:none}
+.quiz-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.5;display:none}
+.quiz-block{margin-bottom:18px}
+.reflect-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.reflect-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.reflect-num{width:24px;height:24px;min-width:24px;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.reflect-text{font-size:13px;color:#64748b;line-height:1.55}
+.reflect-text strong{color:#1e293b;font-weight:600}
+.hl{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;font-size:13px;color:#78350f;line-height:1.55;margin:10px 0}
+.hl strong{color:#92400e;font-weight:600}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid #e2e8f0;background:#fff;flex-shrink:0}
+.nav-btn{background:#f1f5f9;border:1px solid #e2e8f0;color:#475569;padding:7px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:#e2e8f0;color:#1e293b}
+.nav-btn.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.nav-btn.primary:hover{background:#1e40af}
+.nav-btn:disabled{opacity:.35;pointer-events:none}
+.nav-counter{font-size:12px;color:#94a3b8}
+code{font-family:'Courier New',monospace;font-size:12px;background:#f1f5f9;padding:1px 5px;border-radius:3px;border:1px solid #e2e8f0}
+.autoria-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;padding:2px 9px;border-radius:20px;text-decoration:none;font-family:'Courier New',monospace;letter-spacing:.02em;white-space:nowrap}
+.autoria-badge:hover{background:#bfdbfe;color:#1e40af}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-left">
+      <span class="badge">Aula 12</span>
+      <div><div class="hdr-title">HTTP na Prática — Exposição Dialogada</div><div class="hdr-sub">30 minutos · Projetor · Turma</div></div>
+    </div>
+    <a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a>
+    <div class="timer" id="timer">30:00</div>
+    <button onclick="window.location.href='a12_demo_ao_vivo.html'" style="font-size:12px;font-weight:600;background:#fff;border:1.5px solid #1d4ed8;color:#1d4ed8;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">💻 Demo ao Vivo →</button>
+  </div>
+  <div class="dots" id="dots-bar"></div>
+  <div class="slide-wrap" id="slide-wrap"></div>
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="nav(-1)" disabled>← Anterior</button>
+    <span class="nav-counter" id="counter">1 / 7</span>
+    <button class="nav-btn primary" id="btn-next" onclick="nav(1)">Próximo →</button>
+  </div>
+</div>
+<script>
+const SLIDES = [
+  {id:'intro', render:()=>`
+    <div class="eyebrow">Abertura · 4 minutos</div>
+    <div class="slide-title">O rastreador de encomendas</div>
+    <div class="slide-sub">A aba Network do DevTools é como um rastreador: mostra cada requisição que a página faz, uma por uma, com todos os detalhes.</div>
+    <div class="cards">
+      <div class="card accent"><div class="card-icon">📦</div><div class="card-title">Network do DevTools</div><div class="card-body">Lista TODAS as requisições da página em tempo real.</div></div>
+      <div class="card accent"><div class="card-icon">🏷️</div><div class="card-title">Headers</div><div class="card-body">As etiquetas da caixa — informações extras sobre o pedido.</div></div>
+      <div class="card"><div class="card-icon">📮</div><div class="card-title">Status code</div><div class="card-body">O carimbo final: entregue, não encontrado, erro.</div></div>
+      <div class="card"><div class="card-icon">🔍</div><div class="card-title">Postman/Thunder Client</div><div class="card-body">A lupa que usamos para testar tudo isso manualmente.</div></div>
+    </div>
+    <div class="hl"><strong>Pergunta para a turma:</strong> Já perceberam uma página "carregando aos poucos"? Isso costuma ser várias requisições diferentes acontecendo, uma de cada vez.</div>`},
+  {id:'headers', render:()=>`
+    <div class="eyebrow">Aprofundando · 7 minutos</div>
+    <div class="slide-title">Headers de requisição e resposta</div>
+    <div class="slide-sub">Informações extras que viajam junto com o pedido e a resposta.</div>
+    <div class="code-wrap">
+      <div class="code-hdr"><span class="code-lang">HTTP Headers</span><div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div></div>
+      <pre><span class="c"># Requisição</span>
+<span class="a">Content-Type</span>: <span class="s">application/json</span>
+<span class="a">Authorization</span>: <span class="s">Bearer abc123</span>
+
+<span class="c"># Resposta</span>
+<span class="a">Content-Type</span>: <span class="s">application/json; charset=utf-8</span>
+<span class="a">Content-Length</span>: <span class="s">348</span></pre>
+    </div>`},
+  {id:'status', render:()=>`
+    <div class="eyebrow">Revisão aplicada · 6 minutos</div>
+    <div class="slide-title">Status codes — clique para revisar</div>
+    <div class="slide-sub">A mesma tabela da Aula 1, agora vista em APIs reais.</div>
+    <div class="tag-grid">
+      <div class="tag-item" onclick="showTag(this,'200 OK','Sucesso — aqui está o resultado que você pediu.')"><div class="tag-code">200</div><div class="tag-name">OK</div></div>
+      <div class="tag-item" onclick="showTag(this,'201 Created','Um novo recurso foi criado com sucesso, geralmente após um POST.')"><div class="tag-code">201</div><div class="tag-name">Created</div></div>
+      <div class="tag-item" onclick="showTag(this,'400 Bad Request','A requisição está malformada — algo no formato dos dados enviados está errado.')"><div class="tag-code">400</div><div class="tag-name">Bad Request</div></div>
+      <div class="tag-item" onclick="showTag(this,'401 Unauthorized','Falta autenticação, ou a credencial enviada está incorreta/expirada.')"><div class="tag-code">401</div><div class="tag-name">Unauthorized</div></div>
+      <div class="tag-item" onclick="showTag(this,'404 Not Found','O recurso pedido simplesmente não existe naquele endereço.')"><div class="tag-code">404</div><div class="tag-name">Not Found</div></div>
+      <div class="tag-item" onclick="showTag(this,'500 Internal Server Error','Algo quebrou do lado do servidor — não é culpa do cliente desta vez.')"><div class="tag-code">500</div><div class="tag-name">Server Error</div></div>
+    </div>
+    <div class="tag-preview" id="tag-prev">Clique em um status acima para ver a descrição aqui.</div>`},
+  {id:'devtools', render:()=>`
+    <div class="eyebrow">Ferramenta na prática · 6 minutos</div>
+    <div class="slide-title">Inspecionando com o DevTools</div>
+    <div class="slide-sub">Tudo que uma página pede para funcionar, visível em tempo real.</div>
+    <div class="code-wrap">
+      <div class="code-hdr"><span class="code-lang">Passo a passo</span><div class="cdots"><div class="cdot" style="background:#ef4444"></div><div class="cdot" style="background:#f59e0b"></div><div class="cdot" style="background:#10b981"></div></div></div>
+      <pre><span class="t">1. Abra qualquer site</span>
+<span class="t">2. F12 → aba Network</span>
+<span class="t">3. Recarregue a página (F5)</span>
+<span class="t">4. Filtre por "Fetch/XHR" para ver só chamadas de API</span>
+<span class="t">5. Clique numa requisição: headers, status, resposta</span></pre>
+    </div>
+    <div class="hl"><strong>Dica:</strong> a coluna "Time" mostra quanto tempo cada requisição levou — útil para identificar gargalos de performance.</div>`},
+  {id:'quiz', render:()=>`
+    <div class="eyebrow">Verificação de aprendizagem · 4 minutos</div>
+    <div class="slide-title">Quiz rápido — turma responde junto</div>
+    <div class="slide-sub">Sem pressão. O objetivo é consolidar o que aprendemos.</div>
+    <div class="quiz-block">
+      <div class="quiz-q">1. Você recebe um status 401 ao tentar acessar uma API. O que provavelmente está faltando?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>A</span>Uma imagem</div>
+        <div class="quiz-opt" onclick="answer(this,'c','fb1')"><span>B</span>Autenticação válida</div>
+        <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>C</span>Um CSS</div>
+        <div class="quiz-opt" onclick="answer(this,'w','fb1')"><span>D</span>Nada, é um sucesso</div>
+      </div>
+      <div class="quiz-feedback" id="fb1" style="background:#f0fdf4;color:#15803d">Correto! 401 Unauthorized indica problema de autenticação.</div>
+    </div>
+    <div class="quiz-block">
+      <div class="quiz-q">2. Onde você vê TODAS as requisições feitas por uma página, incluindo chamadas de API?</div>
+      <div class="quiz-opts">
+        <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>A</span>Aba Elements</div>
+        <div class="quiz-opt" onclick="answer(this,'c','fb2')"><span>B</span>Aba Network</div>
+        <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>C</span>Aba Console apenas</div>
+        <div class="quiz-opt" onclick="answer(this,'w','fb2')"><span>D</span>Não é possível ver isso</div>
+      </div>
+      <div class="quiz-feedback" id="fb2" style="background:#f0fdf4;color:#15803d">Correto! A aba Network é feita exatamente para isso.</div>
+    </div>`},
+  {id:'fechamento', render:()=>`
+    <div class="eyebrow">Encerramento · 3 minutos</div>
+    <div class="slide-title">Recapitulando e partindo para a prática</div>
+    <div class="slide-sub">O que aprendemos e o que fazemos agora.</div>
+    <div class="reflect-list">
+      <div class="reflect-item"><div class="reflect-num">1</div><div class="reflect-text"><strong>Headers</strong> carregam metadados sobre requisição e resposta.</div></div>
+      <div class="reflect-item"><div class="reflect-num">2</div><div class="reflect-text"><strong>Status codes</strong> revisados, agora aplicados a APIs reais.</div></div>
+      <div class="reflect-item"><div class="reflect-num">3</div><div class="reflect-text"><strong>DevTools e Postman</strong> são as ferramentas do dia a dia de qualquer desenvolvedor.</div></div>
+      <div class="reflect-item"><div class="reflect-num">4</div><div class="reflect-text"><strong>Agora vamos inspecionar</strong> requisições reais juntos, ao vivo.</div></div>
+    </div>
+    <div class="hl"><strong>Próxima aula:</strong> vamos consumir uma API de verdade em JavaScript, com fetch e Promises.</div>`}
+];
+let cur=0, timerInterval=null, timerStarted=false;
+function buildDots(){const bar=document.getElementById('dots-bar');SLIDES.forEach((s,i)=>{const d=document.createElement('span');d.className='dot'+(i===0?' active':'');d.onclick=()=>goTo(i);bar.appendChild(d);if(i<SLIDES.length-1){const sep=document.createElement('div');sep.className='dot-sep';bar.appendChild(sep);}});}
+function buildSlides(){const wrap=document.getElementById('slide-wrap');SLIDES.forEach((s,i)=>{const div=document.createElement('div');div.className='slide'+(i===0?' active':'');div.id='sl-'+s.id;div.innerHTML=s.render();wrap.appendChild(div);});}
+function goTo(i){const prev=cur;document.getElementById('sl-'+SLIDES[prev].id).classList.remove('active');const dots=document.querySelectorAll('.dot');dots[prev].classList.remove('active');if(i>prev)dots[prev].classList.add('done');cur=i;const el=document.getElementById('sl-'+SLIDES[cur].id);el.innerHTML=SLIDES[cur].render();el.classList.add('active');dots[cur].classList.add('active');dots[cur].classList.remove('done');document.getElementById('btn-prev').disabled=cur===0;const btnNext=document.getElementById('btn-next');btnNext.disabled=cur===SLIDES.length-1;btnNext.textContent=cur===SLIDES.length-1?'Finalizar':'Próximo →';document.getElementById('counter').textContent=(cur+1)+' / '+SLIDES.length;if(!timerStarted){timerStarted=true;startTimer();}}
+function nav(d){const ni=cur+d;if(ni>=0&&ni<SLIDES.length)goTo(ni);}
+function startTimer(){let rem=30*60;const el=document.getElementById('timer');timerInterval=setInterval(()=>{rem--;if(rem<=0){clearInterval(timerInterval);el.textContent='00:00';el.className='timer danger';return;}const m=Math.floor(rem/60),s=rem%60;el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(rem<=300)el.className='timer warn';if(rem<=60)el.className='timer danger';},1000);}
+function showTag(el,tag,desc){document.querySelectorAll('.tag-item').forEach(t=>t.classList.remove('tag-on'));el.classList.add('tag-on');document.getElementById('tag-prev').innerHTML='<strong>'+tag+'</strong><br>'+desc;}
+function answer(el,type,fbId){const block=el.closest('.quiz-block');block.querySelectorAll('.quiz-opt').forEach(o=>{if(o===el)o.classList.add(type==='c'?'correct':'wrong');else o.classList.add('dimmed');});const fb=document.getElementById(fbId);if(type!=='c'){fb.style.background='#fef2f2';fb.style.color='#dc2626';fb.textContent='Não exatamente — revise o significado do código/aba.';}fb.style.display='block';}
+buildDots();buildSlides();document.getElementById('btn-prev').disabled=true;
+</script>
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <div></div>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 12 &middot; 1 de 5 &middot; Exposição<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a12_demo_ao_vivo.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;white-space:nowrap" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">Demo ao Vivo &#8594;</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="author" content="@karizeviecelli"><meta name="copyright" content="© 2026 @karizeviecelli. Todos os direitos reservados."><title>Desafio — Aula 13 fetch e Consumo de API</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh;padding:24px 24px 70px}.wrap{max-width:820px;margin:0 auto}.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.hdr h1{font-size:16px;font-weight:600}.hdr p{font-size:12px;color:#94a3b8}.timer-box{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 18px;margin-bottom:16px}.timer-display{font-size:28px;font-weight:700;font-family:'Courier New',monospace;color:#1e293b;flex:1}.timer-display.warn{color:#dc2626}.tbtn{font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-family:inherit}.tbtn.start{background:#1d4ed8;color:#fff;border-color:#1d4ed8}.brief{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:18px 20px;margin-bottom:16px}.brief h2{font-size:14px;font-weight:600;margin-bottom:8px}.brief p{font-size:13px;line-height:1.7;color:#475569;margin-bottom:8px}.brief code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px}.checklist{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:6px;margin-bottom:16px}.chk-item{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-bottom:1px solid #f1f5f9}.chk-item:last-child{border-bottom:none}.chk-box{width:20px;height:20px;border-radius:5px;border:2px solid #cbd5e1;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px}.chk-box.on{background:#16a34a;border-color:#16a34a}.chk-text{font-size:13px;line-height:1.6;color:#334155}.chk-text strong{color:#1e293b}.autoria-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;padding:2px 9px;border-radius:20px;text-decoration:none;font-family:'Courier New',monospace}.autoria-badge:hover{background:#bfdbfe}.summary{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;font-size:13px;color:#1e3a8a;display:none}.summary.show{display:block}</style></head>
+<body>
+<div class="wrap">
+  <div class="hdr"><h1>Desafio — Aula 13</h1><p>Trabalho autônomo, cronometrado &nbsp;<a href="https://instagram.com/karizeviecelli" target="_blank" class="autoria-badge">© @karizeviecelli</a></p></div>
+  <div class="timer-box"><span style="font-size:20px">⏱️</span><div class="timer-display" id="timer">20:00</div><button class="tbtn start" id="btn-start" onclick="timerClick()">Iniciar</button><button class="tbtn" onclick="timerReset()">Zerar</button></div>
+  <div class="brief"><h2>🎯 Missão</h2><p>Construa uma mini-página que busca e exibe dados de uma API pública, sozinho(a) — sem passo a passo.</p><p><strong>Tarefa:</strong> use <code>https://jsonplaceholder.typicode.com/users</code> (ou outra API pública à sua escolha) para montar uma lista de cards na tela.</p></div>
+  <div class="checklist" id="checklist"></div>
+  <div class="summary" id="summary"></div>
+</div>
+<script>
+const ITEMS = [
+  "Criar uma função <strong>async</strong> que usa <code>await fetch(...)</code> para buscar os dados.",
+  "Converter a resposta com <code>await resposta.json()</code> antes de usar os dados.",
+  "Exibir <strong>ao menos nome e e-mail</strong> de cada usuário na tela, um card ou item de lista por usuário.",
+  "Envolver o código em <strong>try/catch</strong>, mostrando uma mensagem amigável se a requisição falhar.",
+  "Adicionar um botão de <strong>\"Recarregar\"</strong> que busca os dados novamente ao ser clicado.",
+  "Testar o que acontece se você digitar uma URL errada de propósito — a página não pode quebrar."
+];
+function buildList(){document.getElementById('checklist').innerHTML=ITEMS.map((t,i)=>`<div class="chk-item"><div class="chk-box" id="cb-${i}" onclick="toggleChk(${i})"></div><div class="chk-text">${t}</div></div>`).join('');}
+let checked=0;
+function toggleChk(i){const box=document.getElementById(`cb-${i}`);const on=box.classList.toggle('on');box.textContent=on?'✓':'';checked+=on?1:-1;if(checked===ITEMS.length){document.getElementById('summary').classList.add('show');document.getElementById('summary').innerHTML=`✅ <strong>Desafio completo!</strong> Sua página agora consome uma API real, com tratamento de erro. Leve para a Prática revisar em dupla, se sobrar tempo.`;}else{document.getElementById('summary').classList.remove('show');}}
+let seconds=1200, running=false, tInterval=null;
+function fmt(s){const m=Math.floor(s/60).toString().padStart(2,'0');const ss=(s%60).toString().padStart(2,'0');return `${m}:${ss}`;}
+function tick(){seconds--;document.getElementById('timer').textContent=fmt(seconds);if(seconds<=300)document.getElementById('timer').classList.add('warn');if(seconds<=0){clearInterval(tInterval);running=false;document.getElementById('btn-start').textContent='Iniciar';}}
+function timerClick(){if(running){clearInterval(tInterval);running=false;document.getElementById('btn-start').textContent='Continuar';}else{tInterval=setInterval(tick,1000);running=true;document.getElementById('btn-start').textContent='Pausar';}}
+function timerReset(){clearInterval(tInterval);running=false;seconds=1200;document.getElementById('timer').textContent=fmt(seconds);document.getElementById('timer').classList.remove('warn');document.getElementById('btn-start').textContent='Iniciar';}
+buildList();
+</script>
+<div style="position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #bfdbfe;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:9999;gap:12px">
+  <a href="a13_pratica_guiada.html" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none;border:1px solid #e2e8f0">&#8592; Prática</a>
+  <div style="font-size:11px;color:#94a3b8;font-family:'Courier New',monospace;text-align:center;flex:1;line-height:1.6">Aula 13 &middot; 4 de 5 &middot; Desafio<br><a href="https://instagram.com/karizeviecelli" target="_blank" style="color:#2563eb;text-decoration:none;font-weight:600;font-size:10px">© @karizeviecelli</a></div>
+  <a href="a13_feedback.html" style="display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:#fff;font-size:12px;font-weight:600;padding:7px 15px;border-radius:8px;text-decoration:none">Feedback &#8594;</a>
+</div>
+</body></html>
