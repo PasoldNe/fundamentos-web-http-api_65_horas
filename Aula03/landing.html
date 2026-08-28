@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BNG 1.0</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- Cabeçalho do site -->
+    <header class="head">
+        <h1>Nova atualização do BeamNG.Drive 1.0</h1>
+        <p>Updated on 32/14/2045</p>
+    </header>
+
+    <!-- Menu de navegação -->
+    <nav>
+        <a href="#carros">Veiculos</a>
+        <a href="#mapas">Mapas</a>
+        <a href="#graficos">Graficos</a>
+    </nav>
+
+    <main>
+
+        <section id="mapas">
+            <video src="https://www.youtube.com/watch?v=EkxpDWA6_co" controls width="90vw">tests</video>
+            <h2>MAPAS</h2>
+            <p>Os cenários de BeamNG.drive receberam revisões profundas, incluindo o aprimoramento de superfícies de
+                terreno, densidade florestal e integração total com o novo sistema de iluminação física. Mapas
+                icônicos agora contam com texturas PBR atualizadas, sinalização detalhada e rotas off-road
+                otimizadas para testes de física de suspensão.</p>
+        </section>
+        <section id="carros">
+            <h2>CARROS</h2>
+            <p>A frota de veículos passou por uma revisão completa de física de deformação, distribuição de peso e
+                aerodinâmica. Além disso, o Modo Carreira recebeu ajustes de mercado, categorizando o valor de
+                compra e revenda dos automóveis de acordo com suas condições e especificações técnicas.</p>
+
+            <!-- Tabela de veículos -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Valor Carreira</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="Cellita">
+                        <td>1</td>
+                        <td>Cellita</td>
+                        <td>$149.900</td>
+                    </tr>
+                    <tr class="Pigeon">
+                        <td>2</td>
+                        <td>Pigeon</td>
+                        <td>$14.900</td>
+                    </tr>
+                    <tr class="Sunburst">
+                        <td>3</td>
+                        <td>Sunburst</td>
+                        <td>$35.900</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Os modelos contam com novas configurações de ajuste de suspensão, simulação de estresse mecânico no
+                motor e amostragem de áudio dinâmica baseada na rotação e exaustão dos escapamentos.</p>
+
+
+        </section>
+        <section id="articleAside">
+            <h2 class="">GRÁFICOS</h2>
+
+
+            <aside>
+                <p>Quais mudanças aconteram:</p>
+                <a href="#adaptacaoOcular">Iluminação e Adaptação Ocular</a>
+                <a href="ceuNuvem">Céu Astronômico e Nuvens Volumétricas</a>
+                <a href="farois">Faróis</a>
+                <a href="sombras">Sombras</a>
+                <a href="dx12">HDR10 e DX12/Vulkan</a>
+            </aside>
+        </section>
+
+        <section id="graficos">
+            <div id="adaptacaoOcular">
+                <h3>Iluminação Físico-Matemática e Adaptação Ocular</h3>
+
+                <img src="images/ExemploIluminacao.png" alt="Iluminação e Adaptação Ocular">
+
+                <p>O sistema de luz abandonou aproximações genéricas e passou a seguir a lei do inverso do quadrado
+                    da distância. O jogo ganhou adaptação de exposição automática, simulando o olho humano ao sair
+                    de túneis ou encarar áreas muito iluminadas.</p>
+
+                <img src="images/AntesIluminacao.png" alt="antes">
+                <img src="images/DepoisIluminacao.png" alt="depois">
+            </div>
+
+            <div id="ceuNuvem">
+                <h3>Céu Dinâmico e Nuvens Volumétricas</h3>
+
+                <img src="images/ExemploCeuDinamico.png " alt="Céu e Nuvens Volumétricas">
+
+                <p>A reformulação do sistema atmosférico introduz nuvens volumétricas em tempo real e dispersão de
+                    luz realista, criando transições de clima e períodos do dia muito mais imersivos.</p>
+
+                <img src="images/AntesCeuDinamico.png" alt="antes">
+                <img src="images/DepoisCeuDinamico.png" alt="depois">
+            </div>
+
+            <div id="farois">
+                <h3>Projeção de Faróis e Iluminação Veicular</h3>
+
+                <img src="images/ExemploFarois.png" alt="Iluminação dos Faróis">
+
+                <p>Os faróis dos veículos agora utilizam projeções de iluminação aprimoradas e atenuação física,
+                    refletindo com precisão sobre o asfalto, neblina e superfícies reflexivas.</p>
+
+                <img src="images/AntesFarois.png" alt="antes">
+                <img src="images/DepoisFarois.png" alt="depois">
+            </div>
+
+            <div id="sombras">
+                <h3>Sombras Suaves e Oclusão de Ambiente</h3>
+
+                <img src="images/ExemploSombras.png" alt="Sombras e Oclusão">
+
+                <p>O renderizador de sombras recebeu filtragem dinâmica baseada na distância da fonte luminosa,
+                    suavizando bordas e eliminando artefatos visuais na vegetação e nas carrocerias.</p>
+
+                <img src="images/AntesSombras.png" alt="antes">
+                <img src="images/DepoisSombras.png" alt="depois">
+            </div>
+
+        </section>
+
+
+        <br><br><br>
+        <!-- Formulário de contato -->
+        <section id="newsletter">
+            <h4>Assine já o nosso Newsletter para ficar por dentro de tudo que acontece dentro do mundo dos games em
+                tempo real!!</h4>
+            <br>
+            <p>Informe seu e-mail para começar a receber agora mesmo:</p>
+            <form action="#" method="post">
+                <label for="email">E-mail</label>
+                <input name="email" id="email">
+
+                <label for="assunto">Assunto</label>
+                <select name="assunto" id="assunto"></select>
+
+                <label for="mensagem">Mensagem</label>
+                <textarea name="mensagem" id="mensagem"></textarea>
+
+                <button type="submit">Enviar</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Rodapé do site -->
+    <footer>
+        <p>Contato: <a href="mailto:vitorpasold4@gmail.com">vitorpasold4@gmail.com</a> | <a
+                href="https://www.beamng.com" target="_blank">Site Oficial</a></p>
+        <p>&copy; 2026 Vitor Alex Pasold. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+
+</html>
