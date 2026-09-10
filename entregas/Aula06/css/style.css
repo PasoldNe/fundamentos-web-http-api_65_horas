@@ -34,7 +34,7 @@ header {
     margin-bottom: 5px;
 }
 
-/* Navbar - requisitos marcados */
+/* navbar */
 nav {
     display: flex;
     justify-content: space-between;
@@ -102,6 +102,7 @@ aside a {
     text-decoration: none;
 }
 
+/* cards */
 .grade-de-cards {
     display: flex;
     flex-wrap: wrap;
@@ -115,7 +116,7 @@ aside a {
     border: 1px solid #ccc;
 }
 
-/* Card com order (requisito marcado) */
+/* esse card vai pra frente com order */
 .card-destaque {
     order: -1;
     border-color: #3b82f6;
