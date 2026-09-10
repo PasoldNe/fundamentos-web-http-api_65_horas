@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header, nav, section, footer {
+    background: #ffffff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+header {
+    text-align: center;
+}
+
+#titulo {
+    font-size: 1.6rem;
+    color: #1d4ed8;
+    margin-bottom: 5px;
+}
+
+/* Navbar - requisitos marcados */
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    background-color: #eee;
+    padding: 8px 16px;
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+h3 {
+    margin: 15px 0 5px 0;
+    font-size: 1.1rem;
+}
+
+p {
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.destaque {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+aside {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+aside a {
+    display: block;
+    margin: 6px 0;
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.grade-de-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 15px;
+}
+
+.card {
+    flex: 1 1 200px;
+    padding: 16px;
+    border: 1px solid #ccc;
+}
+
+/* Card com order (requisito marcado) */
+.card-destaque {
+    order: -1;
+    border-color: #3b82f6;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+form label {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+input, select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    background-color: #0066cc;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #0066cc;
+}
