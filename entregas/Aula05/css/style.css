@@ -1,3 +1,13 @@
+/* Reset global e definição do Box Model */
+* {
+    box-sizing: border-box;
+}
+
+/* Rolagem suave para links de âncora */
+html {
+    scroll-behavior: smooth;
+}
+
 /* Centraliza a página e define fonte limpa */
 body {
     font-family: Arial, sans-serif;
@@ -22,6 +32,8 @@ img, video {
     max-width: 100%;
     height: auto;
     border-radius: 4px;
+    display: block;
+    margin: 10px 0;
 }
 
 /* Tabela básica */
@@ -34,13 +46,15 @@ table {
 th, td {
     border: 1px solid #ccc;
     padding: 8px;
+    text-align: left;
 }
 
-/* Navegação (botoes simples alinhados lado a lado) */
+/* Navegação (botões simples alinhados lado a lado) */
 nav {
     display: flex;
     gap: 10px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -80,4 +94,37 @@ form {
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
+}
+
+form label {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+input, select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+button {
+    background-color: #0066cc;
+    color: #ffffff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 5px;
+}
+
+button:hover {
+    background-color: #004b99;
 }
