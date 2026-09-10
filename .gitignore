@@ -1,0 +1,9 @@
+# Ignora todos os arquivos e pastas da raiz
+/*
+
+# Mantém a pasta 'entregas' e todo o seu conteúdo
+!/entregas/
+!/entregas/**
+
+# Mantém o próprio arquivo .gitignore versionado
+!.gitignore

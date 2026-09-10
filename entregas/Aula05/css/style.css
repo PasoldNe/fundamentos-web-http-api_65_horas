@@ -1,0 +1,83 @@
+/* Centraliza a página e define fonte limpa */
+body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 0 10px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Blocos organizados, quadrados e com cantos levemente arredondados */
+header, nav, section, aside, footer {
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* Garante que imagens e vídeos não vazem da tela */
+img, video {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Tabela básica */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+/* Navegação (botoes simples alinhados lado a lado) */
+nav {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    background-color: #eee;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+nav a:hover {
+    background-color: #ddd;
+}
+
+/* Bloco lateral (links empilhados em lista) */
+aside {
+    background-color: #fafafa;
+}
+
+aside a {
+    display: block;
+    margin: 6px 0;
+    color: #0066cc;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+aside a:hover {
+    text-decoration: underline;
+}
+
+/* Formulário (campos organizados em coluna) */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
