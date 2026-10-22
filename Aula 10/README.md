@@ -736,20 +736,7 @@ Responda antes de consultar a seção seguinte:
 11. Por que `reset()` sozinho não limpa toda a interface?
 12. Mostrar uma mensagem de sucesso significa que os dados foram salvos?
 
-## 16. Gabarito comentado das perguntas
 
-1. O DOM é a representação do documento em objetos e relações de árvore. O HTML participa da construção dessa estrutura, e o JavaScript pode modificá-la durante a execução.
-2. `querySelector` retorna a primeira correspondência ou `null`. `querySelectorAll` retorna uma coleção estática com todas as correspondências, possivelmente vazia.
-3. O primeiro método já espera um ID. O segundo espera um seletor CSS; nesse formato, `#` indica ID.
-4. `.value`. Usamos `.textContent` para textos de elementos como parágrafos e títulos.
-5. Para texto simples, especialmente conteúdo vindo do usuário. `innerHTML` interpreta marcação e precisa de cuidados com conteúdo não confiável.
-6. Se a classe começar ausente, o primeiro clique adiciona e o segundo remove. Se começar presente, ocorre o inverso.
-7. `input` acompanha alterações do valor pelo usuário, incluindo colar e apagar. Em um campo de texto, `change` ocorre ao confirmar a mudança ao sair do campo.
-8. Cancela a ação padrão de envio daquele evento. A função continua; `return` pode encerrá-la em um ponto escolhido.
-9. O envio pode ocorrer pelo teclado. A validação pertence à ação do formulário, não exclusivamente ao mouse.
-10. Desativa o bloqueio automático da validação nativa no envio, permitindo que nosso código de `submit` conduza as mensagens. Não apaga as restrições dos campos.
-11. Ele restaura os valores iniciais dos controles; não remove mensagens, classes e atributos personalizados adicionados pelo script.
-12. Não. Nosso código só altera a interface. Persistência exigiria uma implementação adicional de armazenamento; neste exercício ela não existe.
 
 ---
 
