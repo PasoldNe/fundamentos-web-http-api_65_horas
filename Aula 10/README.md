@@ -251,6 +251,195 @@ Leitura da primeira instrução:
 | `"titulo"` | Valor do atributo `id` procurado |
 
 `const` não impede alterações no elemento. Impede que a variável receba outra referência. Assim, `titulo.textContent = "Outro texto"` é permitido.
+---
+**`document.getElementById()` permite localizar um elemento HTML pelo seu `id`**, para ler ou alterar seu conteúdo com JavaScript.
+
+Pense no `id` como o número de um armário: ele identifica exatamente qual elemento queremos encontrar. Por isso, **cada `id` deve ser único na página**.
+
+Exemplo:
+
+```html
+<p id="mensagem">Texto original</p>
+
+<script>
+    // Localiza o elemento cujo id é "mensagem".
+    const paragrafo = document.getElementById("mensagem");
+
+    // Altera o texto do elemento encontrado.
+    paragrafo.textContent = "Olá, turma!";
+</script>
+```
+
+A seguir, cinco atividades em ordem crescente de dificuldade. Os alunos devem criar o HTML e o JavaScript.
+
+**Atividade 1 — Mensagem de boas-vindas [BÁSICO]**
+
+Uma escola deseja exibir uma mensagem de acolhimento quando o visitante clicar em um botão.
+
+Crie:
+
+- Um título com o texto “Portal da escola”.
+- Um parágrafo com `id="mensagem"` e o texto “Aguardando sua visita...”.
+- Um botão com o texto “Entrar”.
+
+Ao clicar no botão, o JavaScript deve localizar o parágrafo usando `getElementById` e substituir seu texto por **“Seja bem-vindo à nossa escola!”**.
+
+**Pratique:** localizar elementos e alterar `textContent`.
+
+**Para pensar:** o que acontece se o HTML tiver `id="mensagem"`, mas o JavaScript procurar `"Mensagem"`?
+
+---
+
+**Atividade 2 — Saudação personalizada [BÁSICO]**
+
+A recepção da escola quer mostrar uma saudação com o nome digitado pelo estudante.
+
+Crie:
+
+- Um campo de texto com `id="nome"`, acompanhado de um rótulo.
+- Um botão “Cumprimentar”.
+- Um parágrafo com `id="saudacao"`.
+
+Ao clicar no botão, o programa deve ler o nome e apresentar uma mensagem como:
+
+```text
+Olá, Ana! Que bom ter você aqui.
+```
+
+Se o campo estiver vazio, mostre **“Digite seu nome para continuar.”**.
+
+**Dica:**
+
+```javascript
+// .value acessa o conteúdo digitado no campo.
+// .trim() remove espaços do início e do final.
+const nome = document.getElementById("nome").value.trim();
+```
+
+**Pratique:** ler `value`, usar `if` e alterar `textContent`.
+
+**Para pensar:** por que usamos `value` para ler o campo e `textContent` para escrever no parágrafo?
+
+---
+
+**Atividade 3 — Calculadora de material escolar [INTERMEDIÁRIO]**
+
+Uma papelaria precisa calcular o valor da compra de cadernos. Cada caderno custa **R$ 15,00**.
+
+Crie:
+
+- Um campo numérico com `id="quantidade"`.
+- Um botão “Calcular compra”.
+- Um parágrafo com `id="total"`.
+
+Ao clicar no botão, o programa deve:
+
+1. Ler a quantidade informada.
+2. Verificar se é um número inteiro maior que zero.
+3. Multiplicar a quantidade pelo preço do caderno.
+4. Apresentar o valor total no parágrafo.
+
+**Exemplo:** para `3` cadernos, o resultado deve ser **“Total da compra: R$ 45,00”**.
+
+Se o campo estiver vazio ou a quantidade for inválida, apresente **“Informe uma quantidade inteira maior que zero.”**.
+
+**Dica:**
+
+```javascript
+// O valor de um input é lido como texto.
+// Number converte esse texto para número.
+const quantidade = Number(document.getElementById("quantidade").value);
+
+// Number.isInteger(quantidade) verifica se o número é inteiro.
+```
+
+**Pratique:** leitura de campos, conversão numérica, validação e cálculo.
+
+**Para pensar:** por que a quantidade `2.5` não deve ser aceita nessa compra?
+
+---
+
+**Atividade 4 — Aviso de vagas disponíveis [INTERMEDIÁRIO]**
+
+A escola oferece uma oficina com poucas vagas. O atendente precisa informar na página se as inscrições estão abertas ou encerradas.
+
+Crie:
+
+- Um parágrafo com `id="status"` e o texto “Inscrições abertas”.
+- Um botão “Encerrar inscrições”.
+- Um botão “Reabrir inscrições”.
+
+Implemente os seguintes comportamentos:
+
+| Botão acionado | Texto no parágrafo | Cor do texto |
+|---|---|---|
+| Encerrar inscrições | Inscrições encerradas | Vermelho |
+| Reabrir inscrições | Inscrições abertas | Verde |
+
+Os dois botões devem modificar **o mesmo parágrafo**, localizado com `getElementById`.
+
+**Dica:**
+
+```javascript
+// Guarda uma referência ao elemento encontrado.
+const aviso = document.getElementById("status");
+
+// Altera a cor do texto.
+aviso.style.color = "green";
+```
+
+**Pratique:** alterar texto e estilo de um elemento.
+
+**Para pensar:** por que é útil mostrar uma mensagem escrita, além de mudar a cor?
+
+---
+
+**Atividade 5 — Painel de pontos da turma [DESAFIO]**
+
+Durante uma competição de perguntas, a professora deseja controlar a pontuação da turma em uma página.
+
+Crie:
+
+- Um título “Pontuação da turma”.
+- Um parágrafo com `id="pontos"`, começando em `0`.
+- Um botão “Acertou: +10 pontos”.
+- Um botão “Perdeu: −5 pontos”.
+- Um botão “Reiniciar”.
+- Um parágrafo com `id="mensagem"` para mostrar o progresso.
+
+Implemente as regras:
+
+1. A pontuação começa em zero.
+2. Cada acerto acrescenta 10 pontos.
+3. Cada perda desconta 5 pontos, mas a pontuação nunca pode ficar negativa.
+4. O botão “Reiniciar” volta a pontuação para zero.
+5. Com 30 pontos ou mais, a mensagem deve ser **“Parabéns! Meta alcançada!”**.
+6. Abaixo de 30 pontos, a mensagem deve ser **“Continue tentando!”**.
+7. Após cada clique, atualize os dois parágrafos usando `getElementById`.
+
+**Dica:** mantenha a pontuação em uma variável numérica e use o parágrafo apenas para exibi-la.
+
+```javascript
+// Declarada fora das funções para manter a pontuação entre os cliques.
+let pontuacao = 0;
+```
+
+**Pratique:** variáveis, funções, condições e atualização de vários elementos.
+
+**Teste seu raciocínio:** qual deve ser a pontuação depois de clicar três vezes em “Acertou” e uma vez em “Perdeu”? Qual mensagem deve aparecer?
+
+---
+
+**Orientação para todas as atividades:** se o JavaScript estiver em um arquivo chamado `script.js`, na pasta do JS, faça a ligação assim:
+
+```html
+<!-- Aguarda a leitura do HTML antes de executar o JavaScript. -->
+<script src=".js/script.js" defer></script>
+```
+
+**Entrega:** HTML e JavaScript de cada atividade, com comentários explicando onde o `getElementById` é usado e qual elemento ele localiza.
+
+---
 
 ### 4.2. `querySelector`: busca por seletor CSS
 
