@@ -250,7 +250,7 @@ Leitura da primeira instrução:
 | `getElementById(...)` | Método que procura um elemento pelo ID |
 | `"titulo"` | Valor do atributo `id` procurado |
 
-`const` não impede alterações no elemento. Impede que a variável receba outra referência. Assim, `titulo.textContent = "Outro texto"` é permitido.
+**`const`** não impede alterações no elemento. Impede que a variável receba outra referência. Assim, `titulo.textContent = "Outro texto"` é permitido.
 ---
 Observação**`document.getElementById()` permite localizar um elemento HTML pelo seu `id`**, para ler ou alterar seu conteúdo com JavaScript.
 
