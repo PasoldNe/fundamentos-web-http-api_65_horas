@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkpoint 3 - Cadastro - Aula 10</title>
+    <link rel="stylesheet" href="cadastro.css">
+    <script src="cadastro.js" defer></script>
+</head>
+<body>
+    <main>
+        <nav><a href="index.html">Voltar para a Aula 10</a></nav>
+        <h1>Inscrição na oficina</h1>
+        <p>Preencha os campos para validar a inscrição. Use dados fictícios.</p>
+        <p>Esta atividade não envia nem salva os dados.</p>
+        <!-- novalidate permite mostrar os erros pelo JavaScript no submit. -->
+        <form id="form-cadastro" novalidate>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required aria-describedby="erro-nome">
+            <p id="erro-nome" class="mensagem-erro" aria-live="polite"></p>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required aria-describedby="erro-email">
+            <p id="erro-email" class="mensagem-erro" aria-live="polite"></p>
+
+            <label for="senha">Senha de demonstração:</label>
+            <input type="password" id="senha" name="senha" required minlength="6" aria-describedby="erro-senha">
+            <p id="erro-senha" class="mensagem-erro" aria-live="polite"></p>
+
+            <button type="submit">Validar inscrição</button>
+            <button type="button" id="limpar">Limpar</button>
+            <p id="sucesso" role="status"></p>
+        </form>
+    </main>
+</body>
+</html>

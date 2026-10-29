@@ -1,0 +1,79 @@
+/* Configurações gerais */
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px 15px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+nav {
+    margin-bottom: 20px;
+}
+a {
+    color: #1d4ed8;
+}
+h1, h2 {
+    color: #2c3e50;
+}
+p, li {
+    line-height: 1.6;
+}
+section, form {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+li {
+    margin-bottom: 10px;
+}
+label {
+    display: block;
+    margin: 15px 0 6px;
+    font-weight: bold;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    font: inherit;
+}
+button {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    margin-top: 12px;
+    cursor: pointer;
+    font: inherit;
+}
+button:hover {
+    background-color: #004c99;
+}
+/* Mostra onde está o foco ao navegar pelo teclado. */
+:focus-visible {
+    outline: 3px solid #92400e;
+    outline-offset: 3px;
+}
+.destaque {
+    background-color: #fef3c7;
+    border: 2px solid #92400e;
+}
+@media (max-width: 480px) {
+    button {
+        width: 100%;
+    }
+    section, form {
+        padding: 15px;
+    }
+}

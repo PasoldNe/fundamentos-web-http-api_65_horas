@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório - Aula 10</title>
+    <link rel="stylesheet" href="laboratorio.css">
+    <script src="laboratorio.js" defer></script>
+</head>
+<body>
+    <main>
+        <nav><a href="index.html">Voltar para a Aula 10</a></nav>
+        <h1 id="titulo">Minha casa interativa</h1>
+        <p class="descricao">Use os controles para modificar a página.</p>
+        <label for="visitante">Seu nome:</label>
+        <input type="text" id="visitante">
+        <button type="button" id="btn-saudacao">Mostrar saudação</button>
+        <p id="saudacao" aria-live="polite"></p>
+        <p id="contador">Caracteres digitados: 0</p>
+        <button type="button" id="btn-destaque" aria-pressed="false">Alternar destaque</button>
+        <section id="painel" class="card">
+            <h2>Painel da casa</h2>
+            <p>Este painel pode receber destaque.</p>
+        </section>
+        <section class="card">
+            <h2>Segundo painel</h2>
+            <p>Este painel serve para comparar os seletores.</p>
+        </section>
+    </main>
+</body>
+</html>
