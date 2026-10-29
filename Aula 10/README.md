@@ -252,7 +252,7 @@ Leitura da primeira instrução:
 
 `const` não impede alterações no elemento. Impede que a variável receba outra referência. Assim, `titulo.textContent = "Outro texto"` é permitido.
 ---
-**`document.getElementById()` permite localizar um elemento HTML pelo seu `id`**, para ler ou alterar seu conteúdo com JavaScript.
+Observação**`document.getElementById()` permite localizar um elemento HTML pelo seu `id`**, para ler ou alterar seu conteúdo com JavaScript.
 
 Pense no `id` como o número de um armário: ele identifica exatamente qual elemento queremos encontrar. Por isso, **cada `id` deve ser único na página**.
 
